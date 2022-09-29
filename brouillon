@@ -1,0 +1,122 @@
+		// if (((t_words *)tmp_words->content)->token == TOK_DOLL)
+		// {
+		// 	res = ft_check_after_doll(((t_words *)tmp_words->next->content)->word);
+		// 	new_echo = ft_res(envcp, res, ((t_words *)tmp_words->next->content)->word);
+		// 	printf("NEW BEBEOW = %s\n", new_echo);
+		// 	free(new_echo);
+		// }
+
+
+char	*ft_res(t_list **envcp, int res, char *word)
+{
+	int	len;
+	int	i;
+	char *new_word;
+	t_list *tmp_envcp;
+	int	len_one_env;
+	char *new_word;
+	char *tmp_4;
+	int j4;
+	char *reste_4;
+	char *nul_4;
+	int	i;
+	int j4;
+	int	h;
+	int	len;
+	int	len_one_env;
+
+
+	len = ft_strlen(word);
+	tmp_envcp = *envcp;
+	len_one_env = 0;
+	tmp_4 = 0;
+	j4 = 0;
+	reste_4 = 0;
+	int	k = 0;
+	k = ft_strlen(word);
+	int ki = 0;
+	h = 0;
+	if (res == 1)
+	{
+		i = 1;
+@@ -109,7 +109,7 @@ char	*ft_res(t_list **envcp, int res, char *word)
+			if (ft_strncmp(((t_cpenv *)tmp_envcp->content)->one_env, word, len) == 0)
+			{
+				len_one_env = ft_strlen((((t_cpenv *)tmp_envcp->content)->one_env)) - (len + 1);
+				new_word = malloc(sizeof(char) * len_one_env);
+				new_word = malloc(sizeof(char) * len_one_env + 1);
+				while (((t_cpenv *)tmp_envcp->content)->one_env[len + 1 + i])
+				{
+					new_word[i] = ((t_cpenv *)tmp_envcp->content)->one_env[len + 1 + i];
+@@ -120,42 +120,40 @@ char	*ft_res(t_list **envcp, int res, char *word)
+		}
+		if (i == 0)
+		{
+			new_word = malloc(sizeof(char) * 1);
+			new_word = malloc(sizeof(char) * 1 + 1);
+			new_word[i] = '\0';
+		}
+	}
+	if (res == 4)
+	{
+		i = 0;
+		j4 = 0;
+		printf("k = %d\n", k);
+		while ((word[i] >= 'a' && word[i] <= 'z') || (word[i] >= '0' && word[i] <= '9')
+			|| (word[i] >= 'A' && word[i] <= 'Z'))
+			i++;
+		tmp_4 = malloc(sizeof(char) * (i + 1));
+		reste_4 = malloc(sizeof(char) * (len - i) + 1);
+		while (j4 < i)
+		{
+			tmp_4[j4] = word[j4];
+			j4++;
+		}
+		printf("i = %d\n", i);
+		while (i <= k)
+		tmp_4[j4]  = '\0';
+		while (i < len && word[i])
+		{
+			//i = 0;
+			(void)reste_4;
+			(void)ki;
+			printf("reste 4 =============>>>>>>>>>>> %c\n", word[i]);
+			reste_4[h] = word[i];
+			i++;
+			h++;
+		}
+		tmp_4[j4]  = '\0';
+		reste_4[h] = '\0';
+		while (tmp_envcp)
+		{
+			j4 = 0;
+			len = ft_strlen(tmp_4);
+			if (ft_strncmp(((t_cpenv *)tmp_envcp->content)->one_env, tmp_4, len) == 0)
+			{
+				len_one_env = ft_strlen((((t_cpenv *)tmp_envcp->content)->one_env)) - (len + 1);
+				new_word = malloc(sizeof(char) * len_one_env);
+				new_word = malloc(sizeof(char) * len_one_env + 1);
+				while (((t_cpenv *)tmp_envcp->content)->one_env[len + 1 + j4])
+				{
+					new_word[j4] = ((t_cpenv *)tmp_envcp->content)->one_env[len + 1 + j4];
+@@ -166,36 +164,48 @@ char	*ft_res(t_list **envcp, int res, char *word)
+		}
+		if (j4 == 0)
+		{
+			new_word = malloc(sizeof(char) * 1);
+			new_word[j4] = '\0';
+			nul_4 = malloc(sizeof(char) * 1 + 1);
+			nul_4[j4] = '\0';
+			new_word = ft_strjoin(nul_4, reste_4);
+			free(reste_4);
+			free(nul_4);
+			free(tmp_4);
+			return (new_word);
+		}
+		new_word = ft_strjoin(new_word, tmp_4);
+		new_word = ft_strjoin(new_word, reste_4);
+		free(reste_4);
+		free(tmp_4);
+	}
+	return (new_word);
+}

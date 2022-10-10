@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 15:43:55 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 10:59:48 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 12:17:08 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,31 @@
 char	*ft_cd_home(char *tmp, t_list **cpenv)
 {
 	t_list	*envcp;
-	char	*str_home;
 	int		i;
+	int		j;
+	char	*str_home;
+	int		len;
 
 	envcp = *cpenv;
-	i = 0;
+	i = 5;
+	j = 0;
 	while (envcp)
 	{
-		if (ft_strcmp(((t_words *)envcp->content)->word, ))
+		if (ft_strncmp(((t_words *)envcp->content)->word, "HOME=", 5) == 0)
+			tmp = ((t_words *)envcp->content)->word;
+		envcp = envcp->next;
 	}
+	len = ft_strlen(tmp) - 5;
+	str_home = malloc(sizeof(char) * (len + 1));
+	while (tmp[i])
+	{
+		str_home[j] = tmp[i];
+		i++;
+		j++;
+	}
+	str_home[j] = '\0';
+	return (str_home);
 }
-
 
 char	*ft_cd_back(char *tmp)
 {
@@ -49,7 +63,34 @@ char	*ft_cd_back(char *tmp)
 		j++;
 	}
 	final_pwd[j] = '\0';
+	free(tmp);
 	return (final_pwd);
+}
+
+int	ft_cd_organisation(char *tmp, t_list **envcp, char *str, int i)
+{
+	t_list	*cpenv;
+
+	cpenv = *envcp;
+	if (str[i] == '~')
+	{
+		tmp = ft_cd_home(tmp, &cpenv);
+		if (chdir(tmp) != 0)
+			return (EXIT_FAILURE);
+	}
+	else if (ft_strcmp(str, "..") == 0)
+	{
+		tmp = ft_cd_back(tmp);
+		if (chdir(tmp) != 0)
+			return (EXIT_FAILURE);
+	}
+	else
+	{
+		if (chdir(str) != 0)
+			return (EXIT_FAILURE);
+	}
+	free(tmp);
+	return (EXIT_SUCCESS);
 }
 
 int	ft_cd(t_list *cmd, t_list **cpenv)
@@ -63,22 +104,13 @@ int	ft_cd(t_list *cmd, t_list **cpenv)
 	len = 0;
 	tmp = NULL;
 	if (ft_lstsize(&cmd) > 2)
-		return (ft_putstr_fd("Minimichel: cd: too many arguments\n", 2), EXIT_FAILURE);
+		return (ft_putstr_fd("Minimichel: cd: too many arguments\n", 2), 1);
 	if (cmd->next)
 		str = ((t_words *)cmd->next->content)->word;
 	else
 		str = "~";
 	len = ft_strlen(str);
-	if (str[i] == '~')
-		return (chdir("/mnt/nfs/homes/jecolmou"), EXIT_SUCCESS);
-	else if (ft_strcmp(str, "..") == 0)
-	{
-		tmp = ft_cd_back(tmp);
-		if (chdir(tmp) != 0)
-			return (EXIT_FAILURE);
-	}
-	else
-		return (chdir(str), EXIT_SUCCESS);
-	free(old_pwd);
+	if (ft_cd_organisation(tmp, cpenv, str, i) != 0)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

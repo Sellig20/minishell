@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 17:56:57 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/07 15:15:38 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 18:16:23 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	ft_execution_nopipe(t_list **after_doll, t_list **cpenv, t_data *x)
 	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
 	if (cmd->content)
 	{
-		if (ft_is_builtin(&cmd, x, cpenv) == EXIT_SUCCESS)
-			return ;
+		ft_is_builtin(&cmd, &redir, x, cpenv);
+		return ;
 	}
 	processus = fork();
 	if (processus < 0)

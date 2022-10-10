@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 09:33:10 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/06 18:41:39 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 18:06:24 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,6 @@ void	ft_catch_file(t_list **redir, t_data *x, t_list **cpenv)
 		}
 		else if ( ((t_words *)tmp->content)->token == TOK_TO)//out
 		{
-			//dprintf(2, "oui ----------------------> >\n");
 			file = ft_read_outfile(((t_words *)tmp->next->content)->word);
 			if (file < 0)
 				ft_perm_error(((t_words *)tmp->next->content)->word);

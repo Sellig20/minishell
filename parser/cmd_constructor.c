@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/05 15:23:18 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 15:44:16 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 			opt = ft_join_options(&cmd_line, x);
 			if (!opt)
 				return (false);
-			dprintf(2, "OPT = %s\n", opt);
 			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, opt, cpenv);
 			free(opt);
 		}

@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:23:01 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/07 16:55:16 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 18:04:19 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,17 @@ void	ft_builtins(char *cmd, char *cmdnext)
 	dprintf(2, "%s\n", cmdnext);
 }
 
-int	ft_is_builtin(t_list **cmd, t_data *x, t_list **cpenv)
+int	ft_is_builtin(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 {
 	t_list *tmp_cmd;
-	int	i = 0;
+	t_list *tmp_redir;
+	int	i;
+
 	(void)x;
 	tmp_cmd = *cmd;
+	tmp_redir = *redir;
+	i = 0;
+	ft_catch_file(&tmp_redir, x, cpenv);
 	while (tmp_cmd)
 	{
 		while((g_lookup[i].builtin_name != 0))
@@ -32,7 +37,6 @@ int	ft_is_builtin(t_list **cmd, t_data *x, t_list **cpenv)
 			if (ft_strcmp(((t_words *)tmp_cmd->content)->word, g_lookup[i].builtin_name) == 0)
 			{
 				g_lookup[i].fonction(tmp_cmd, cpenv);
-				return (EXIT_SUCCESS);
 			}
 			i++;
 		}
@@ -40,28 +44,3 @@ int	ft_is_builtin(t_list **cmd, t_data *x, t_list **cpenv)
 	}
 	return (EXIT_FAILURE);
 }
-/*
-void	ft_env(t_list **cpenv)
-{
-	t_list	*tmp;
-	t_words	*content;
-	char	*before_eq;
-	char	*after_eq;
-	int		index_eq;
-
-	tmp = *cpenv;
-	while (tmp)
-	{
-		content = (t_words *) tmp->content;
-		if (content->token == TOK_ENV)
-		{
-			index_eq = check_if_equal(content->word);
-			before_eq = ft_strndup(content->word, index_eq);
-			after_eq = ft_substr(content->word,
-					index_eq + 1, ft_strlen(content->word));
-			printf("%s=%s\n", before_eq, after_eq);
-			free(before_eq);
-			free(after_eq);
-		}
-		tmp = tmp->next;
-}*/

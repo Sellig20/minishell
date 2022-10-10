@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:35:03 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/07 15:18:04 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 17:47:35 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <errno.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #define false 0
 #define true 1
@@ -264,7 +266,7 @@ void		ft_catch_file_tekflemme(t_list **after_doll, t_data *x);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////BUILTINS
 
-int			ft_is_builtin(t_list **cmd, t_data *x, t_list **cpenv);
+int			ft_is_builtin(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
 //void			ft_echo_n_option(t_list *cmd, char *str, int i, int n_option);
 
 //export.c

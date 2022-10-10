@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 15:43:55 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:20:54 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 15:37:54 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,24 @@ char	*ft_cd_back(char *tmp)
 	return (final_pwd);
 }
 
+char	*ft_check_str(char *str)
+{
+	int	i;
+	DIR	*d;
+
+	i = 0;
+	d = opendir(str);
+	if (d == NULL)
+	{
+		ft_putstr_fd("Minimichel: cd: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		return (NULL);
+	}
+	free(d);
+	return (str);
+}
+
 int	ft_cd_organisation(char *tmp, t_list **envcp, char *str, int i)
 {
 	t_list	*cpenv;
@@ -86,7 +104,8 @@ int	ft_cd_organisation(char *tmp, t_list **envcp, char *str, int i)
 	}
 	else
 	{
-		if (chdir(str) != 0)
+		str = ft_check_str(str);
+		if (str && chdir(str) != 0)
 			return (EXIT_FAILURE);
 	}
 	free(tmp);
@@ -110,7 +129,7 @@ int	ft_cd(t_list *cmd, t_list **cpenv)
 	else
 		str = "~";
 	len = ft_strlen(str);
-	if (ft_cd_organisation(tmp, cpenv, str, i) != 0)
+	if (ft_cd_organisation(tmp, cpenv, str, i) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

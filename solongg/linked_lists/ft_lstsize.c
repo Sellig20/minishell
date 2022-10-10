@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/28 09:50:32 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:21:23 by jecolmou         ###   ########.fr       */
+/*   Created: 2022/05/31 16:43:28 by jecolmou          #+#    #+#             */
+/*   Updated: 2022/06/30 19:21:29 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "so_long.h"
 
-int	ft_pwd(t_list *cmd, t_list **cpenv)
+int	ft_lstsize(t_map **lst)
 {
-	char	*tmp;
+	int			count;
+	t_map		*buffer;
 
-	(void)cpenv;
-	(void)cmd;
-	tmp = getcwd(NULL, 0);
-	ft_putstr_fd(tmp, 1);
-	ft_putstr_fd("\n", 1);
-	free(tmp);
-	return (EXIT_SUCCESS);
+	count = 0;
+	buffer = *lst;
+	while (buffer)
+	{
+		buffer = buffer->next;
+		count++;
+	}
+	return (count);
 }

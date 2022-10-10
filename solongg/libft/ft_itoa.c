@@ -1,26 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/28 09:50:32 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:21:23 by jecolmou         ###   ########.fr       */
+/*   Created: 2022/05/26 18:04:57 by jecolmou          #+#    #+#             */
+/*   Updated: 2022/05/26 18:05:11 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-int	ft_pwd(t_list *cmd, t_list **cpenv)
+char	*ft_itoa(int nb)
 {
-	char	*tmp;
+	char	*str;
+	long	n;
+	int		len;
 
-	(void)cpenv;
-	(void)cmd;
-	tmp = getcwd(NULL, 0);
-	ft_putstr_fd(tmp, 1);
-	ft_putstr_fd("\n", 1);
-	free(tmp);
-	return (EXIT_SUCCESS);
+	n = nb;
+	len = ft_int_len(n);
+	str = malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (NULL);
+	str[len--] = '\0';
+	if (n == 0)
+		str[0] = 48;
+	else if (n < 0)
+	{
+		str[0] = '-';
+		n *= -1;
+	}
+	while (n > 0)
+	{
+		str[len] = (n % 10) + 48;
+		n = n / 10;
+		len--;
+	}
+	return (str);
 }

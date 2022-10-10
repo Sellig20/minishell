@@ -1,26 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_add_back.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/28 09:50:32 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:21:23 by jecolmou         ###   ########.fr       */
+/*   Created: 2022/05/30 18:07:37 by jecolmou          #+#    #+#             */
+/*   Updated: 2022/06/30 19:21:29 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "so_long.h"
 
-int	ft_pwd(t_list *cmd, t_list **cpenv)
+t_map	*ft_add_back(t_map *a_list, char *value)
 {
-	char	*tmp;
+	t_map	*a;
+	t_map	*tmp;
 
-	(void)cpenv;
-	(void)cmd;
-	tmp = getcwd(NULL, 0);
-	ft_putstr_fd(tmp, 1);
-	ft_putstr_fd("\n", 1);
-	free(tmp);
-	return (EXIT_SUCCESS);
+	a = malloc(sizeof(t_map));
+	if (a == NULL || value == NULL)
+		return (NULL);
+	a->x = value;
+	a->next = NULL;
+	tmp = a_list;
+	if (!tmp)
+		a_list = a;
+	else
+	{
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = a;
+	}
+	return (a_list);
 }

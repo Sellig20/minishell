@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/28 09:50:32 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:21:23 by jecolmou         ###   ########.fr       */
+/*   Created: 2022/05/26 16:26:21 by jecolmou          #+#    #+#             */
+/*   Updated: 2022/06/27 18:41:55 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-int	ft_pwd(t_list *cmd, t_list **cpenv)
+int	ft_strlen(char *str)
 {
-	char	*tmp;
+	int	i;
 
-	(void)cpenv;
-	(void)cmd;
-	tmp = getcwd(NULL, 0);
-	ft_putstr_fd(tmp, 1);
-	ft_putstr_fd("\n", 1);
-	free(tmp);
-	return (EXIT_SUCCESS);
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
 }

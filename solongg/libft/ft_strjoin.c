@@ -1,26 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/28 09:50:32 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:21:23 by jecolmou         ###   ########.fr       */
+/*   Created: 2022/05/26 17:25:02 by jecolmou          #+#    #+#             */
+/*   Updated: 2022/05/27 17:20:09 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-int	ft_pwd(t_list *cmd, t_list **cpenv)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	char	*tmp;
+	int		i;
+	int		j;
+	char	*final;
 
-	(void)cpenv;
-	(void)cmd;
-	tmp = getcwd(NULL, 0);
-	ft_putstr_fd(tmp, 1);
-	ft_putstr_fd("\n", 1);
-	free(tmp);
-	return (EXIT_SUCCESS);
+	i = 0;
+	j = 0;
+	if (!s1)
+		return (0);
+	final = (char *)malloc(sizeof(char)
+			* ((ft_strlen(s1) + (ft_strlen(s2))) + 1));
+	if (final == NULL)
+		return (NULL);
+	while ((char)s1[i])
+	{
+		final[i] = (char)s1[i];
+		i++;
+	}
+	while ((char)s2[j])
+	{
+		final[i] = (char)s2[j];
+		j++;
+		i++;
+	}
+	final[i] = '\0';
+	return (final);
 }

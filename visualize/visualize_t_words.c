@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   visualize_t_words.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/28 09:50:32 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 12:21:23 by jecolmou         ###   ########.fr       */
+/*   Created: 2022/09/30 19:55:50 by jecolmou          #+#    #+#             */
+/*   Updated: 2022/09/30 19:56:02 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_pwd(t_list *cmd, t_list **cpenv)
+void	visualize_t_words(t_list **lst_words)
 {
-	char	*tmp;
+	t_list	*tmp;
+	int		i;
 
-	(void)cpenv;
-	(void)cmd;
-	tmp = getcwd(NULL, 0);
-	ft_putstr_fd(tmp, 1);
-	ft_putstr_fd("\n", 1);
-	free(tmp);
-	return (EXIT_SUCCESS);
+	tmp = *lst_words;
+	i = 0;
+	while (tmp->next)
+	{
+		printf("1.maillon num %i : word = %s, token = %i\n", i, ((t_words *)tmp->content)->word, ((t_words *) tmp->content)->token);
+		tmp = tmp->next;
+		i++;
+	}
+	printf("2.maillon num %i : word = %s, token = %i\n", i, ((t_words *) tmp->content)->word, ((t_words *) tmp->content)->token);
 }

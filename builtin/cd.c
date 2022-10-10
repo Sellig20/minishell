@@ -6,38 +6,45 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 15:43:55 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/07 18:04:15 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/10 10:59:48 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_get_old_pwd(t_list **cpenv, char *old_pwd)
+char	*ft_cd_home(char *tmp, t_list **cpenv)
 {
 	t_list	*envcp;
+	char	*str_home;
+	int		i;
+
+	envcp = *cpenv;
+	i = 0;
+	while (envcp)
+	{
+		if (ft_strcmp(((t_words *)envcp->content)->word, ))
+	}
+}
+
+
+char	*ft_cd_back(char *tmp)
+{
 	char	*final_pwd;
 	int		i;
 	int		j;
 	int		len;
-	int		comp;
 
-	i = 4;
+	i = 0;
 	j = 0;
-	comp = 0;
-	envcp = *cpenv;
-	while (envcp)
-	{
-		if (ft_strncmp(((t_words *)envcp->content)->word, "PWD=", 4) == 0)
-			old_pwd = ((t_words *)envcp->content)->word;
-		envcp = envcp->next;
-	}
-	len = ft_strlen(old_pwd) - 1;
-	final_pwd = malloc(sizeof(char) * len + 1);
-	while (old_pwd[len] && old_pwd[len] != '/')
+	tmp = getcwd(NULL, 0);
+	(void)tmp;
+	len = ft_strlen(tmp) - 1;
+	final_pwd = malloc(sizeof(char) * (len + 1));
+	while (tmp[len] && tmp[len] != '/')
 		len--;
 	while (i < len)
 	{
-		final_pwd[j] = old_pwd[i];
+		final_pwd[j] = tmp[i];
 		i++;
 		j++;
 	}
@@ -50,12 +57,11 @@ int	ft_cd(t_list *cmd, t_list **cpenv)
 	char	*str;
 	int		len;
 	int		i;
-	char	*old_pwd;
+	char	*tmp;
 
 	i = 0;
 	len = 0;
-	old_pwd = NULL;
-	//dprintf(2, "-> %s\n", old_pwd);
+	tmp = NULL;
 	if (ft_lstsize(&cmd) > 2)
 		return (ft_putstr_fd("Minimichel: cd: too many arguments\n", 2), EXIT_FAILURE);
 	if (cmd->next)
@@ -64,21 +70,15 @@ int	ft_cd(t_list *cmd, t_list **cpenv)
 		str = "~";
 	len = ft_strlen(str);
 	if (str[i] == '~')
-	{
-		if (chdir("/mnt/nfs/homes/jecolmou") != 0)
-			return (EXIT_FAILURE);
-	}
+		return (chdir("/mnt/nfs/homes/jecolmou"), EXIT_SUCCESS);
 	else if (ft_strcmp(str, "..") == 0)
 	{
-		old_pwd = ft_get_old_pwd(cpenv, old_pwd);
-		if (chdir(old_pwd) != 0)
+		tmp = ft_cd_back(tmp);
+		if (chdir(tmp) != 0)
 			return (EXIT_FAILURE);
 	}
 	else
-	{
-		if (chdir(str) != 0)
-			return (EXIT_FAILURE);
-	}
+		return (chdir(str), EXIT_SUCCESS);
 	free(old_pwd);
 	return (EXIT_SUCCESS);
 }

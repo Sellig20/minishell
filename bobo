@@ -1,11 +1,12 @@
-[?2004h$>^C[?2004l11 jecolmou 2021_paris   4096 Oct 11 18:41 .
+[?2004h$>^C[?2004l11 jecolmou 2021_paris   4096 Oct 11 18:42 .
 drwxr-xr-x  9 jecolmou 2021_paris   4096 Oct 10 15:51 ..
+-rw-r--r--  1 jecolmou 2021_paris      0 Oct 11 18:42 bobo
 -rw-r--r--  1 jecolmou 2021_paris   4883 Oct 10 12:21 brouillon
 drwxr-xr-x  2 jecolmou 2021_paris   4096 Oct 11 17:40 builtin
 drwxr-xr-x  2 jecolmou 2021_paris   4096 Oct 11 17:57 execution
 drwxr-xr-x  8 jecolmou 2021_paris   4096 Oct 10 18:18 .git
 -rw-r--r--  1 jecolmou 2021_paris    112 Oct 10 12:21 ignore_readline
--rw-r--r--  1 jecolmou 2021_paris      0 Oct 11 18:42 K
+-rw-r--r--  1 jecolmou 2021_paris   1369 Oct 11 18:42 K
 -rw-r--r--  1 jecolmou 2021_paris   4030 Oct 10 12:21 kawaii
 drwxr-xr-x  2 jecolmou 2021_paris   4096 Oct 11 14:36 lexeur
 -rw-r--r--  1 jecolmou 2021_paris   3433 Oct 11 12:21 main.c

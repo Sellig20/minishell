@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:40:12 by evsuits           #+#    #+#             */
-/*   Updated: 2022/09/30 18:05:17 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/11 12:21:53 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ int	main(int ac, char **av, char **env)
 		ft_dup_env(env, cpenv, &x);
 		x.env = env;
 		final_doll(segment, cpenv, after_doll, &x);
-
 		ft_execution_organisation(after_doll, cpenv, &x);
 		//ft_execution_nopipe(after_doll, cpenv, &x);
 		//ft_visualize_cmd_redir(after_doll);

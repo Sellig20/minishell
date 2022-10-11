@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 11:17:56 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 18:17:30 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:35:22 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	ft_echo_n_option_yes_not_only(t_list *cmd, char *str, int has_writ)
 	int	i;
 
 	i = 0;
+	//dprintf(2, "yes | not only => %s\n", str);
 	ft_putstr_fd(str, 1);
 	has_writ = 1;
 	if (cmd->next)
@@ -26,6 +27,7 @@ int	ft_echo_n_option_yes_not_only(t_list *cmd, char *str, int has_writ)
 
 int	ft_echo_n_option_yes_only(char *str, int has_writ, int n_option)
 {
+	//dprintf(2, "yes | only => %s\n", str);
 	n_option = 1;
 	if (has_writ > 1)
 		ft_putstr_fd(str, 1);
@@ -34,6 +36,7 @@ int	ft_echo_n_option_yes_only(char *str, int has_writ, int n_option)
 
 int	ft_echo_n_option_no(t_list *cmd, char *str, int has_writ)
 {
+	//dprintf(2, "no | => %s\n", str); 
 	ft_putstr_fd(str, 1);
 	has_writ = 1;
 	if (cmd->next)
@@ -72,14 +75,10 @@ int	ft_echo(t_list *cmd, t_list **cpenv)
 	char	*str;
 	int		n_option;
 	int		has_writ;
-	int		i;
-	int		shot;
 
 	(void)cpenv;
 	has_writ = 0;
 	n_option = 0;
-	i = 0;
-	shot = 0;
 	if (!cmd->next)
 		return (ft_putstr_fd("\n", 1), EXIT_FAILURE);
 	str = NULL;

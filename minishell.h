@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:35:03 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/10 17:47:35 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:11:13 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@ void		ft_catch_file_tekflemme(t_list **after_doll, t_data *x);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////BUILTINS
 
-int			ft_is_builtin(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
+int			ft_is_builtin(t_list **after_doll, t_data *x, t_list **cpenv);
 //void			ft_echo_n_option(t_list *cmd, char *str, int i, int n_option);
 
 //export.c
@@ -307,9 +307,9 @@ int		ft_cd(t_list *cmd, t_list **cpenv);
 
 static t_builtin_value	const g_lookup[] = {
 	{"cd", ft_cd},
-	{"echo",ft_echo},
 	{"pwd", ft_pwd},
 	{"export", ft_fonction},
+	{"echo", ft_echo},
 	{"unset", ft_fonction},
 	{"exit", ft_fonction},
 	{"env", ft_fonction},

@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 15:44:16 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/11 18:41:54 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	ft_error_cannot_access(char *str, char *first)
 	ft_putstr_fd(first, 2);
 	ft_putstr_fd(": cannot access '", 2);
 	ft_putstr_fd(str, 2);
-	ft_putstr_fd("': NO such file or directory\n", 2);
+	ft_putstr_fd("': NOOOOOOOOOOOOOOO such file or directory\n", 2);
 }
 
 int	ft_join_option_error(char *str, char *first, t_list **cmd)
@@ -55,9 +55,8 @@ int	ft_join_option_error(char *str, char *first, t_list **cmd)
 	t_list	*cmd_line;
 
 	cmd_line = *cmd;
-	ft_error_cannot_access(str, first);
-	str = ((t_words *)cmd_line->next->content)->word;
-	return (ft_error_cannot_access(str, first) , 0);
+	str = ((t_words *)cmd_line->content)->word;
+	return (ft_error_cannot_access(str, first) , 1);
 }
 
 char	*ft_cp_options(t_list *cmd_line, int len, char *tt, char *first, char *res)
@@ -71,7 +70,7 @@ char	*ft_cp_options(t_list *cmd_line, int len, char *tt, char *first, char *res)
 	{
 		tt = ((t_words *)cmd_line->content)->word;
 		len = ft_strlen(tt);
-		if (len == 1 && tt[0] == '-')
+		if (len == 1)
 			return (ft_join_option_error(tt, first, &cmd_line), NULL);
 		else if (len > 1 && tt[0] == '-')
 		{
@@ -100,11 +99,17 @@ char	*ft_join_options(t_list **cmd, t_data *x)
 
 	len = 0;
 	cmd_line = *cmd;
+
 	first = ((t_words *)cmd_line->content)->word;
+	dprintf(2, "first = %s\n", first);
 	tt = NULL;
 	if (!cmd)
 		return (NULL);
+	//if (((t_words *)cmd_line->next->content)->word[0] == '-')
 	x->i_len = ft_strlen_option(&cmd_line);
+	// else
+	// 	x->i_len = ft_strlen_option_cat(&cmd_line);
+	dprintf(2, "i_len = %d\n", x->i_len);
 	res = malloc(sizeof(char) * (x->i_len + 2));
 	ft_bzero(res, x->i_len + 1);
 	if (!res)
@@ -129,7 +134,7 @@ void	ft_cmd_and_env(t_data *x, char *co, char *opt, t_list **cpenv)//if env else
 	else
 	{
 		x->option = ft_split(co, ' ');
-		if (access((x->option[0]), X_OK) == 0) ////si env et que c le chemin absolu, rien besoin de construire on envoie direct bb
+		if (access((x->option[0]), X_OK) == 0) ////si env et que c le chemin absolu, rien besoin de construire on envoie direct
 			*x->pc = *(x->option[0]);
 		else
 		{
@@ -146,9 +151,9 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 	t_list	*tmp_cpenv;
 	char	*opt;
 
-	(void)tmp_cpenv;
 	cmd_line = *cmd;
 	tmp_cpenv = *cpenv;
+	(void)tmp_cpenv;
 	x->option = NULL;
 	x->pc = NULL;
 	opt = NULL;
@@ -156,11 +161,15 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 		write(2, "☆☆☆☆☆ PAS DE COMMANDE DANS CE MAILLON ☆☆☆☆☆\n", 25);
 	else
 	{
+		dprintf(2, "=> %s\n", ((t_words *)cmd_line->content)->word);
 		if (cmd_line->next)///si ya une option a la commande
 		{
-			opt = ft_join_options(&cmd_line, x);
+			if (((t_words *)cmd_line->next->content)->word[0] == '-')
+				opt = ft_join_options(&cmd_line, x);
+			else
+				opt = ((t_words *)cmd_line->next->content)->word;
 			if (!opt)
-				return (false);
+				return (EXIT_FAILURE);
 			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, opt, cpenv);
 			free(opt);
 		}
@@ -170,5 +179,5 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 			x->option[1] = NULL;
 		}
 	}
-	return (true);
+	return (EXIT_SUCCESS);
 }

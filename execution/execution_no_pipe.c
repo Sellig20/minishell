@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 17:56:57 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 18:16:23 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:56:43 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,25 @@ void	ft_execution_nopipe(t_list **after_doll, t_list **cpenv, t_data *x)
 	t_list *cmd;
 	t_list *redir;
 	pid_t processus;
-
 	tmp = *after_doll;
 	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
 	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
 	if (cmd->content)
 	{
-		ft_is_builtin(&cmd, &redir, x, cpenv);
-		return ;
+		if (ft_is_builtin(&tmp, x, cpenv) == 0)
+			return;
+		else
+		{
+			processus = fork();
+			if (processus < 0)
+				return (perror("Minimichel: fork: "));
+			if (processus == 0)
+				ft_processus_nopipe(&cmd, &redir, x, cpenv);
+			else
+				waitpid(processus, NULL, 0);
+			ft_free_array(x->option);
+		}
 	}
-	processus = fork();
-	if (processus < 0)
-		return (perror("Minimichel: fork: "));
-	if (processus == 0)
-		ft_processus_nopipe(&cmd, &redir, x, cpenv);
-	else
-		waitpid(processus, NULL, 0);
-	ft_free_array(x->option);
 }
 
 void	ft_processus_nopipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
@@ -44,7 +46,6 @@ void	ft_processus_nopipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv
 
 	tmp_cmd = *cmd;
 	tmp_redir = *redir;
-
 	ft_catch_file(&tmp_redir,  x, cpenv);
 	ft_cmd_constructor(&tmp_cmd, x, cpenv);
 	// dprintf(2, "x pc : %s\n", x->pc);

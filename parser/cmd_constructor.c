@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/11 18:41:54 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/12 12:07:51 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,17 +99,11 @@ char	*ft_join_options(t_list **cmd, t_data *x)
 
 	len = 0;
 	cmd_line = *cmd;
-
 	first = ((t_words *)cmd_line->content)->word;
-	dprintf(2, "first = %s\n", first);
 	tt = NULL;
 	if (!cmd)
 		return (NULL);
-	//if (((t_words *)cmd_line->next->content)->word[0] == '-')
 	x->i_len = ft_strlen_option(&cmd_line);
-	// else
-	// 	x->i_len = ft_strlen_option_cat(&cmd_line);
-	dprintf(2, "i_len = %d\n", x->i_len);
 	res = malloc(sizeof(char) * (x->i_len + 2));
 	ft_bzero(res, x->i_len + 1);
 	if (!res)
@@ -141,6 +135,7 @@ void	ft_cmd_and_env(t_data *x, char *co, char *opt, t_list **cpenv)//if env else
 			x->pc = ft_path_construction(co, x, cpenv); //join slash etc
 			ft_free_array(x->option);
 			x->option = ft_get_ultime_cmd(co, opt, x->pc); //absolute path + option = ultime collage
+			dprintf(2, "COMMANDE ====> %s\n", x->pc);
 		}
 	}
 }
@@ -149,6 +144,7 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 {
 	t_list	*cmd_line;
 	t_list	*tmp_cpenv;
+	t_list	*tmp;
 	char	*opt;
 
 	cmd_line = *cmd;
@@ -157,25 +153,30 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 	x->option = NULL;
 	x->pc = NULL;
 	opt = NULL;
+	tmp = *cmd;
+	while (tmp)
+	{
+		dprintf(2, "=>>>>>>>> %s\n", ((t_words *)tmp->content)->word);
+		tmp = tmp->next;
+	}
 	if (cmd_line->content == NULL)
 		write(2, "☆☆☆☆☆ PAS DE COMMANDE DANS CE MAILLON ☆☆☆☆☆\n", 25);
 	else
 	{
-		dprintf(2, "=> %s\n", ((t_words *)cmd_line->content)->word);
 		if (cmd_line->next)///si ya une option a la commande
 		{
-			if (((t_words *)cmd_line->next->content)->word[0] == '-')
-				opt = ft_join_options(&cmd_line, x);
-			else
-				opt = ((t_words *)cmd_line->next->content)->word;
-			if (!opt)
-				return (EXIT_FAILURE);
-			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, opt, cpenv);
+			// if (((t_words *)cmd_line->next->content)->word[0] == '-')
+			// 	opt = ft_join_options(&cmd_line, x);
+			// else
+			// 	opt = ((t_words *)cmd_line->next->content)->word;
+			// if (!opt)
+			// 	return (EXIT_FAILURE);
+			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, ((t_words *)cmd_line->content)->word, cpenv);
 			free(opt);
 		}
 		else//si ya pas doption genre ls ou wc seuls
 		{
-			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, ((t_words *)cmd_line->content)->word, cpenv);
+			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, NULL, cpenv);
 			x->option[1] = NULL;
 		}
 	}

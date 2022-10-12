@@ -132,73 +132,64 @@ void	ft_execution_pipe(t_list **after_doll, t_list **cpenv, t_data *x, int nb_cm
 	(void)x;
 	(void)cpenv;
 	tmp = *after_doll;
+	///////////////PIPE///////////////
+	if (pipe(x->fd_pipe) == -1)
+		return (perror("Minimichel: pipe: "));
+	////////////////MAILLON 1/////////////////
+	((t_cmdredir *) tmp->content)->fd_cmd[0] = STDIN_FILENO;
+	((t_cmdredir *)tmp->content)->fd_cmd[1] = x->fd_pipe[1];
+	((t_cmdredir *)tmp->next->content)->fd_cmd[0] = x->fd_pipe[0];
+	processus[i] = fork();//////////////////////////////////////////////////FORK 1
+	if (processus[i] < 0)
+		return (perror("Minimichel: fork: "));
+	if (processus[i] == 0)
+		ft_processus_pipe_1(tmp, x, cpenv);///////////////////////////////APPEL PROCESSUS 1
+	close(((t_cmdredir *)tmp->content)->fd_cmd[1]);
 
-	if (tmp->content)
+	ft_free_array(x->option);
+	tmp = tmp->next;
+	i++;
+	while (tmp && tmp->next)
 	{
-		if (ft_is_builtin(&tmp, x, cpenv) == 0)
-			return;
-		else
+		if (pipe(x->fd_pipe) == -1)
+			return (perror("Minimichel: pipe: "));
+		((t_cmdredir *)tmp->content)->fd_cmd[1] = x->fd_pipe[1];
+		((t_cmdredir *)tmp->next->content)->fd_cmd[0] = x->fd_pipe[0];
+		///////////////MAILLON 2///////////////////////
+		processus[i] = fork();/////////////////////////////////////////////////FORK 2
+		if (processus[i] < 0)
+			return (perror("Minimichel: fork: "));
+		if (processus[i] == 0)
 		{
-					//dprintf(2, "====> %d\n", nb_cmd);
-			if (pipe(x->fd_pipe) == -1)
-				return (perror("Minimichel: pipe: "));
-			//ici cest le cas du premier maillon
-			((t_cmdredir *) tmp->content)->fd_cmd[0] = STDIN_FILENO;
-			((t_cmdredir *)tmp->content)->fd_cmd[1] = x->fd_pipe[1];
-			((t_cmdredir *)tmp->next->content)->fd_cmd[0] = x->fd_pipe[0];
-			processus[i] = fork();
-			if (processus[i] < 0)
-				return (perror("Minimichel: fork: "));
-			if (processus[i] == 0)
-				ft_processus_pipe_1(tmp, x, cpenv);
-			close(((t_cmdredir *)tmp->content)->fd_cmd[1]);
-
-			ft_free_array(x->option);
-			tmp = tmp->next;
-			i++;
-			while (tmp && tmp->next)
-			{
-				if (pipe(x->fd_pipe) == -1)
-					return (perror("Minimichel: pipe: "));
-				((t_cmdredir *)tmp->content)->fd_cmd[1] = x->fd_pipe[1];
-				((t_cmdredir *)tmp->next->content)->fd_cmd[0] = x->fd_pipe[0];
-				//ici c'est le cas des maillons du milieu
-				processus[i] = fork();
-				if (processus[i] < 0)
-					return (perror("Minimichel: fork: "));
-				if (processus[i] == 0)
-				{
-					ft_processus_pipe_2(tmp, x, cpenv);
-				}
-				close(((t_cmdredir *)tmp->content)->fd_cmd[0]);
-				close(((t_cmdredir *)tmp->content)->fd_cmd[1]);
-				ft_free_array(x->option);
-				tmp = tmp->next;
-
-				i++;
-			}
-			((t_cmdredir *)tmp->content)->fd_cmd[1] = STDOUT_FILENO;
-			processus[i] = fork();
-			if (processus[i] < 0)
-				return (perror("Minimichel: fork: "));
-			if (processus[i] == 0)
-			{
-				ft_processus_pipe_3(tmp, x, cpenv);
-			}
-			else
-			{
-				close(((t_cmdredir *)tmp->content)->fd_cmd[0]);
-				i = 0;
-				while (i < nb_cmd)
-				{
-					waitpid(processus[i], NULL, 0);
-					i++;
-				}
-				ft_free_array(x->option);
-			}
+			ft_processus_pipe_2(tmp, x, cpenv);///////////////////////////////////APPEL PROCESSUS 2
 		}
-	}
+		close(((t_cmdredir *)tmp->content)->fd_cmd[0]);
+		close(((t_cmdredir *)tmp->content)->fd_cmd[1]);
+		ft_free_array(x->option);
+		tmp = tmp->next;
 
+		i++;
+	}
+	((t_cmdredir *)tmp->content)->fd_cmd[1] = STDOUT_FILENO;
+	/////////////////MAILLON 3////////////////////////////
+	processus[i] = fork();///////////////////////////////////////////////////////FORK 3
+	if (processus[i] < 0)
+		return (perror("Minimichel: fork: "));
+	if (processus[i] == 0)
+	{
+		ft_processus_pipe_3(tmp, x, cpenv);//////////////////////////////////////////APPEL PROCESSUS 3
+	}
+	else
+	{
+		close(((t_cmdredir *)tmp->content)->fd_cmd[0]);
+		i = 0;
+		while (i < nb_cmd)
+		{
+			waitpid(processus[i], NULL, 0);
+			i++;
+		}
+		ft_free_array(x->option);
+	}
 }
 
 void	ft_execution_organisation(t_list **after_doll, t_list **cpenv, t_data *x)

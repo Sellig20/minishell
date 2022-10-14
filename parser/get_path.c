@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 13:19:26 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/04 17:15:35 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/14 16:30:45 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ char	*ft_path_construction(char *co, t_data *x, t_list **cpenv)//ft_path_command
 	path_env = ft_get_path_in_env(x, cpenv); //on obtient notre tableau avec a chaque rangee, un bout de path de env
 	if (!path_env)
 		return (ft_error_command_not_found(co), NULL);
+
 	option = ft_split(co, ' ');
 	if (!option)
 	{
@@ -84,26 +85,26 @@ char	*ft_path_construction(char *co, t_data *x, t_list **cpenv)//ft_path_command
 	}
 	pc_final = ft_construction_absolute_path_pc(path_env, option);
 	if (pc_final)
+	{
 		return (pc_final);
-	ft_error_command_not_found(co);
+	}
+	else
+		ft_error_command_not_found(co);
 	ft_free_array(path_env);
 	ft_free_array(option);
 	return (NULL);
 }
 
-char	**ft_get_ultime_cmd(char *co, char *opt, char *pc) //ft_get_command pour join ma construction a mon option de commande
+char	**ft_get_ultime_cmd(char *co, char *pc) //ft_get_command pour join ma construction a mon option de commande
 {
 	char	**option;
 	char	*tmp;
-	char	*ex;
 
-	if (!co || !pc || !opt)
+	if (!co || !pc)
 		return (NULL);
 	tmp = NULL;
 	option = NULL;
-	ex = ft_strjoin(co, " ");
-	ex = ft_strjoin(ex, opt);
-	option = ft_split(ex, ' ');
+	option = ft_split(co, ' ');
 	if (!option)
 	{
 		free(pc);

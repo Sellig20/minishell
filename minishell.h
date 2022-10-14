@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:35:03 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/11 17:11:13 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/14 15:38:45 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,8 @@ typedef struct s_data{
 	int		i_len;
 	int		n_option;
 	int		i_e;
+	int		outfile;
+	int		flag;
 }	t_data;
 
 typedef struct s_dollar{
@@ -179,16 +181,16 @@ int			ft_is_null(char *cmd);
 int			ft_is_space(char *cmd);
 void		ft_error_command_not_found(char *cmd);
 char		*ft_join_options(t_list **cmd, t_data *x);
-void		ft_cmd_and_env(t_data *x, char *co, char *opt, t_list **cpenv);
+void		ft_cmd_and_env(t_data *x, char *co, t_list **cpenv);
 int			ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv);
-char		**ft_get_ultime_cmd(char *co, char *opt, char *pc);
+char		**ft_get_ultime_cmd(char *co, char *pc);
 char		*ft_path_construction(char *co, t_data *x, t_list **cpenv);
 char		*ft_construction_absolute_path_pc(char **path_env, char **option);
 char		**ft_get_path_in_env(t_data *x, t_list **cpenv);
 
 //////////ENVIRONNEMENT//////////
 void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
-t_cmdredir 	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
+t_cmdredir	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
 t_list		**ft_expand(t_list **words, t_list **envcp, t_data *x);
 void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
 int			ft_check_after_doll(char *word);
@@ -197,13 +199,13 @@ t_words 	*ft_init_cpenv(char *one_env, int token);
 t_cpenv 	*ft_init_cpenv_kezako(char *one_env);
 
 //////////CHECK FILES AN REDIRECTION//////////
-void		ft_catch_file(t_list **after_doll, t_data *x, t_list **envcp);
+void	ft_catch_file(t_list **redir, t_data *x, t_list **cpenv);
 int			ft_read_outfile(char *outfile);
 int			ft_read_infile(char *infile);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////UTILS
 
-//////////LIBFT & UTILS//////////
+//////////LIBFT & UTILS//////////XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx
 char		**ft_split(char const *s, char c);
 char		*ft_strjoin(char const *s1, char const *s2);
 size_t		ft_strlen(const char *s);
@@ -217,7 +219,7 @@ char		*ft_substr(char const *s, unsigned int start, size_t len);
 void		ft_lstadd_front(t_list **alst, t_list *new);
 int			ft_strcmp(const char *s1, const char *s2);
 
-//////////LINKED LISTS//////////
+//////////LINKED LISTS//////////XXXXXXXXXXXXXXXXXXXXXXXXXX
 void		ft_lstadd_back(t_list **alst, t_list *new);
 void		**ft_lstadd_back2(t_list **alst, t_list *new);
 t_list		*ft_lstnew(void * content);
@@ -291,7 +293,7 @@ int			ft_unset_others(t_list *tmp, char *before_eq);
 int			ft_unset_first(t_list *tmp, char *before_eq);
 
 typedef struct s_builtin_value	t_builtin_value;
-typedef int						(*t_fct)(t_list *cmd, t_list **cpenv);
+typedef int						(*t_fct)(t_list *cmd, t_list **cpenv, t_data *x);
 
 struct s_builtin_value
 {
@@ -299,11 +301,10 @@ struct s_builtin_value
 	t_fct const			fonction;
 };
 
-int		ft_fonction(t_list *cmd, t_list **cpenv);//, t_data *x);
-int		ft_pwd(t_list *cmd, t_list **cpenv);//, t_data *x);
-//int		ft_export(t_list *cmdnext, t_list **cpenv);
-int		ft_echo(t_list *cmd, t_list **cpenv);//, t_data *x);
-int		ft_cd(t_list *cmd, t_list **cpenv);
+int		ft_fonction(t_list *cmd, t_list **cpenv, t_data *x);
+int		ft_pwd(t_list *cmd, t_list **cpenv, t_data *x);
+int		ft_echo(t_list *cmd, t_list **cpenv, t_data *x);
+int		ft_cd(t_list *cmd, t_list **cpenv, t_data *x);
 
 static t_builtin_value	const g_lookup[] = {
 	{"cd", ft_cd},

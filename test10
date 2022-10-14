@@ -1,8 +1,7 @@
-[?2004h$>^C[?2004ln
+brouillon
+builtin
 execution
 ignore_readline
-K
-kawaii
 lexeur
 main.c
 main.o
@@ -11,8 +10,12 @@ minishell
 minishell.h
 parser
 piipex
-poupou
 README.txt
 solongg
+test
+test1
+test10
+test11
+test2
 utils
 visualize

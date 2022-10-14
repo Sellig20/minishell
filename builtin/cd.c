@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 15:43:55 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 15:37:54 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/14 13:17:50 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ int	ft_cd_organisation(char *tmp, t_list **envcp, char *str, int i)
 	return (EXIT_SUCCESS);
 }
 
-int	ft_cd(t_list *cmd, t_list **cpenv)
+int	ft_cd(t_list *cmd, t_list **cpenv, t_data *x)
 {
 	char	*str;
 	int		len;
@@ -122,6 +122,7 @@ int	ft_cd(t_list *cmd, t_list **cpenv)
 	i = 0;
 	len = 0;
 	tmp = NULL;
+	(void)x;
 	if (ft_lstsize(&cmd) > 2)
 		return (ft_putstr_fd("Minimichel: cd: too many arguments\n", 2), 1);
 	if (cmd->next)

@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/30 19:54:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/09/30 19:54:46 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/13 13:46:55 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void    ft_visualize_cmd_redir(t_list **list)
             visualize_t_words(&tentativeredir);
             printf("\n");
         }
-        printf("----------------------\n");
         tmp = tmp->next;
     }
 }

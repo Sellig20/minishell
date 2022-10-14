@@ -6,114 +6,13 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/12 12:07:51 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/14 16:31:24 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_strlen_option(t_list **cmd_line)
-{
-	t_list	*cmd;
-	int		i;
-	int		len;
-	char	*tmp;
-	int		len_finale;
-
-	i = 0;
-	len = 0;
-	len_finale = 0;
-	cmd = *cmd_line;
-	while (cmd)
-	{
-		if (cmd->content)
-			tmp = ((t_words *)cmd->content)->word;
-		else
-			return (0);
-		if (tmp[0] == '-')
-		{
-			while (tmp[i] != '\0')
-				i++;
-			len = i - 1;
-		}
-		len_finale += len;
-		cmd = cmd->next;
-	}
-	return (len_finale);
-}
-
-void	ft_error_cannot_access(char *str, char *first)
-{
-	ft_putstr_fd(first, 2);
-	ft_putstr_fd(": cannot access '", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd("': NOOOOOOOOOOOOOOO such file or directory\n", 2);
-}
-
-int	ft_join_option_error(char *str, char *first, t_list **cmd)
-{
-	t_list	*cmd_line;
-
-	cmd_line = *cmd;
-	str = ((t_words *)cmd_line->content)->word;
-	return (ft_error_cannot_access(str, first) , 1);
-}
-
-char	*ft_cp_options(t_list *cmd_line, int len, char *tt, char *first, char *res)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 1;
-	while (cmd_line)
-	{
-		tt = ((t_words *)cmd_line->content)->word;
-		len = ft_strlen(tt);
-		if (len == 1)
-			return (ft_join_option_error(tt, first, &cmd_line), NULL);
-		else if (len > 1 && tt[0] == '-')
-		{
-			i = 1;
-			res[0] = '-';
-			while(i < len && tt[i])
-			{
-				res[j] = tt[i];
-				i++;
-				j++;
-			}
-		}
-		cmd_line = cmd_line->next;
-	}
-	res[j] = '\0';
-	return (res);
-}
-
-char	*ft_join_options(t_list **cmd, t_data *x)
-{
-	t_list	*cmd_line;
-	char	*tt;
-	char	*res;
-	char	*first;
-	int		len;
-
-	len = 0;
-	cmd_line = *cmd;
-	first = ((t_words *)cmd_line->content)->word;
-	tt = NULL;
-	if (!cmd)
-		return (NULL);
-	x->i_len = ft_strlen_option(&cmd_line);
-	res = malloc(sizeof(char) * (x->i_len + 2));
-	ft_bzero(res, x->i_len + 1);
-	if (!res)
-		return (NULL);
-	cmd_line = cmd_line->next;
-	res = ft_cp_options(cmd_line, len, tt, first, res);
-	return (res);
-}
-
-void	ft_cmd_and_env(t_data *x, char *co, char *opt, t_list **cpenv)//if env else pas env
+void	ft_cmd_and_env(t_data *x, char *co, t_list **cpenv)//if env else pas env
 {
 	t_list *tmp_cpenv;
 	tmp_cpenv = *cpenv;
@@ -123,7 +22,7 @@ void	ft_cmd_and_env(t_data *x, char *co, char *opt, t_list **cpenv)//if env else
 		if (access((x->option[0]), X_OK) == 0)
 			*x->pc = *(x->option[0]);
 		else
-			write(2, "ERROR : PAS DE ENV ET PAS DE ABSOLUTE PATH = TU DEGAGES JE SUIS PAS DEVIN BIATCH\n", 35);
+			ft_error_command_not_found(co);
 	}
 	else
 	{
@@ -134,49 +33,65 @@ void	ft_cmd_and_env(t_data *x, char *co, char *opt, t_list **cpenv)//if env else
 		{
 			x->pc = ft_path_construction(co, x, cpenv); //join slash etc
 			ft_free_array(x->option);
-			x->option = ft_get_ultime_cmd(co, opt, x->pc); //absolute path + option = ultime collage
-			dprintf(2, "COMMANDE ====> %s\n", x->pc);
+			x->option = ft_get_ultime_cmd(co, x->pc);
 		}
 	}
+}
+
+int	ft_strlen_cmd(t_list **cmd)
+{
+	int		len;
+	t_list	*tmp;
+
+	tmp = *cmd;
+	len = 0;
+	while (tmp)
+	{
+		len += ft_strlen(((t_words *)tmp->content)->word);
+		tmp = tmp->next;
+	}
+	return (len);
+}
+
+char	*ft_conv_cmd_str(t_list **cmd, char *str)
+{
+	t_list	*tmp;
+	char	*tmp_str;
+
+	tmp = *cmd;
+	str = NULL;
+	while (tmp)
+	{
+		tmp_str = ((t_words *)tmp->content)->word;
+		str = ft_strjoin(str, tmp_str);
+		str = ft_strjoin(str, " ");
+		tmp = tmp->next;
+	}
+	return (str);
 }
 
 int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 {
 	t_list	*cmd_line;
-	t_list	*tmp_cpenv;
 	t_list	*tmp;
-	char	*opt;
+	char	*str;
 
+	tmp = *cmd;
 	cmd_line = *cmd;
-	tmp_cpenv = *cpenv;
-	(void)tmp_cpenv;
+	(void)cpenv;
 	x->option = NULL;
 	x->pc = NULL;
-	opt = NULL;
-	tmp = *cmd;
-	while (tmp)
-	{
-		dprintf(2, "=>>>>>>>> %s\n", ((t_words *)tmp->content)->word);
-		tmp = tmp->next;
-	}
+	str = malloc(sizeof(char) * (ft_strlen_cmd(&tmp) + 1));
+	str = ft_conv_cmd_str(&tmp,  str);
 	if (cmd_line->content == NULL)
 		write(2, "☆☆☆☆☆ PAS DE COMMANDE DANS CE MAILLON ☆☆☆☆☆\n", 25);
 	else
 	{
 		if (cmd_line->next)///si ya une option a la commande
-		{
-			// if (((t_words *)cmd_line->next->content)->word[0] == '-')
-			// 	opt = ft_join_options(&cmd_line, x);
-			// else
-			// 	opt = ((t_words *)cmd_line->next->content)->word;
-			// if (!opt)
-			// 	return (EXIT_FAILURE);
-			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, ((t_words *)cmd_line->content)->word, cpenv);
-			free(opt);
-		}
+			ft_cmd_and_env(x, str,  cpenv);
 		else//si ya pas doption genre ls ou wc seuls
 		{
-			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, NULL, cpenv);
+			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, cpenv);
 			x->option[1] = NULL;
 		}
 	}

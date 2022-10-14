@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 09:33:10 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/10 18:06:24 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:34:27 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,7 @@ int	ft_perm_error(char *file)
 
 int	ft_read_infile(char *infile)
 {
-	// if (access(infile, O_RDONLY))
-		return (open(infile, O_RDONLY));
-	// else if (access(infile, O_DIRECTORY))
-	//  	return (open(infile, O_DIRECTORY));
-	// return (-1);
+	return (open(infile, O_RDONLY));
 }
 
 char	*ft_expand_heredoc(char *line, t_list **cpenv, int res, t_data *x)
@@ -119,33 +115,28 @@ void	ft_redirection_in(int infile)
 void	ft_redirection_out(int outfile)
 {
 	dup2(outfile, STDOUT_FILENO);
-	close (outfile);
+	close(outfile);
 }
 
 void	ft_catch_file(t_list **redir, t_data *x, t_list **cpenv)
 {
-	t_list *tmp;
-	int	file;
+	t_list	*tmp;
+	int		file;
 
 	file = 0;
 	tmp = *redir;
-	(void)x;
+	(void)cpenv;
 	if (((t_words *)tmp->content) == NULL)
-	{
-		//dprintf(2, "☆☆☆☆☆ PAS DE REDIR DANS CE MAILLON ☆☆☆☆☆\n");
-		// dup2(0, STDIN_FILENO);
-		// dup2(1, STDOUT_FILENO);
-		// close (0);
-		// close (1);
 		return ;
-	}
-	while (tmp && tmp->content) // chaque maillon de mes redir
+	while (tmp) // chaque maillon de mes redir
 	{
 		if ( ((t_words *)tmp->content)->token == TOK_FRFR) //heredoc
 		{
 			file = ft_read_infile_heredoc(((t_words *)tmp->next->content)->word, x->line, cpenv, x);
 			if (file < 0)
 				ft_exist_error(((t_words *)tmp->next->content)->word);
+			else if (x->flag == 1)
+				return ;
 			else
 				ft_redirection_in(file);
 		}
@@ -154,22 +145,30 @@ void	ft_catch_file(t_list **redir, t_data *x, t_list **cpenv)
 			file = ft_read_infile(((t_words *)tmp->next->content)->word);
 			if (file < 0)
 				ft_exist_error(((t_words *)tmp->next->content)->word);
+			else if (x->flag == 1)
+				return ;
 			else
 				ft_redirection_in(file);
 		}
 		else if ( ((t_words *)tmp->content)->token == TOK_TOTO)//append
 		{
 			file = ft_read_outfile_append(((t_words *)tmp->next->content)->word);
+			x->outfile = file;
 			if (file < 0)
 				ft_perm_error(((t_words *)tmp->next->content)->word);
+			else if (x->flag == 1)
+				return ;
 			else
 				ft_redirection_out(file);
 		}
 		else if ( ((t_words *)tmp->content)->token == TOK_TO)//out
 		{
 			file = ft_read_outfile(((t_words *)tmp->next->content)->word);
+			x->outfile = file;
 			if (file < 0)
 				ft_perm_error(((t_words *)tmp->next->content)->word);
+			else if (x->flag == 1)
+				return ;
 			else
 				ft_redirection_out(file);
 		}
@@ -212,9 +211,12 @@ void	ft_catch_file_tekflemme(t_list **after_doll, t_data *x)
 		else if ( ((t_words *)tmp->content)->token == TOK_FROM) //in
 		{
 			file = ft_read_infile(((t_words *)tmp->next->content)->word);
+			dprintf(2, "INfile < = %d\n", file);
 			if (file < 0)
 				ft_exist_error(((t_words *)tmp->next->content)->word);
-			((t_cmdredir *) tmp->content)->fd_cmd[0] = file;
+			//((t_cmdredir *) tmp->content)->fd_cmd[0] = file;
+			dup2(file, STDIN_FILENO);
+			close (file);
 		}
 		else if ( ((t_words *)tmp->content)->token == TOK_TOTO)//append
 		{
@@ -226,9 +228,13 @@ void	ft_catch_file_tekflemme(t_list **after_doll, t_data *x)
 		else if ( ((t_words *)tmp->content)->token == TOK_TO)//out
 		{
 			file = ft_read_outfile(((t_words *)tmp->next->content)->word);
+			dprintf(2, "OUTfile > = %d\n", file);
+			x->outfile = file;
 			if (file < 0)
 				ft_perm_error(((t_words *)tmp->next->content)->word);
-			((t_cmdredir *) tmp->content)->fd_cmd[1] = file;
+			//((t_cmdredir *) tmp->content)->fd_cmd[1] = file;
+			dup2(file, STDOUT_FILENO);
+			close(file);
 		}
 		tmp = tmp->next;
 	}

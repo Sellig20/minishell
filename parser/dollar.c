@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 19:33:59 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/07 12:57:36 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/13 14:11:30 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,4 +166,7 @@ void	final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x
 		after_doll = (t_list **)ft_lstadd_back2(after_doll, final);
 		seg = seg->next;
 	}
+	// dprintf(2, "++++++++++++++++++++\n");
+	// ft_visualize_cmd_redir(after_doll);
+	// dprintf(2, "++++++++++++++++++++\n");
 }

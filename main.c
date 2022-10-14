@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:40:12 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/11 12:21:53 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/14 16:11:53 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,14 @@ int	main(int ac, char **av, char **env)
 		after_doll = malloc(sizeof(t_list *));
 
 		ft_bzero(&x, sizeof(x));
+		x.outfile = 1;
 		x.line = readline("$>");
 		add_history(x.line);
 
 	///////////////////////LEXER///////////////////////
 		pre_lexeur(x.line, lst_letters);
 		group_letters(lst_letters, lst_words);
+		//visualize_t_words(lst_words);
 		ft_lst_clear(lst_letters, ft_free_letters);
 		token_validity(lst_words);
 		token_order(lst_words);
@@ -108,13 +110,6 @@ int	main(int ac, char **av, char **env)
 		x.env = env;
 		final_doll(segment, cpenv, after_doll, &x);
 		ft_execution_organisation(after_doll, cpenv, &x);
-		//ft_execution_nopipe(after_doll, cpenv, &x);
-		//ft_visualize_cmd_redir(after_doll);
-
-		//visualize_t_words(cpenv);
-		//ft_organize_execution(&x, after_doll, cpenv);
-		//printf("\n\n");
-		//ft_fork_pipes(&x);
 
 	//////////////////////FREE ALL///////////////////////
 		ft_lst_clear(lst_words, ft_free_words);

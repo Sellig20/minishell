@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:42:07 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/09/30 12:38:36 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/13 11:35:55 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int	ft_is_null(char *cmd)
 	}
 	else if (ft_is_space(cmd) == 0)
 	{
-		ft_error_command_not_found(cmd);
+		ft_putstr_fd("JE SUIS FT_IS_NULL DANS GESTION\n", 2);
+		//ft_error_command_not_found(cmd);
 		return (false);
 	}
 	return (1);

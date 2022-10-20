@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 17:18:23 by evsuits           #+#    #+#             */
-/*   Updated: 2022/09/28 19:41:02 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/09/27 15:04:07 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ char	*ft_strdup(const char *s1)
 	s1_cp = malloc((len + 1) * sizeof(char));
 	if (!s1_cp)
 		return (NULL);
-	//s1_cp[len] = '\0';
 	while (s1[i])
 	{
 		s1_cp[i] = s1[i];

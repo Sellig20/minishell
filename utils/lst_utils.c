@@ -53,21 +53,16 @@ t_list	*ft_lstnew(void *content)
 {
 	t_list	*new;
 
-//	new = malloc(sizeof(t_list));
-//	if (new == NULL)
-//		return (NULL);
-	if (content == NULL)
+	if (!content)
 	{
 		new = malloc(sizeof(t_list));
 		new->next = NULL;
 		new->content = NULL;
 		return (new);
 	}
-//	new = malloc(sizeof(t_list));
-//	if (new == NULL)
-//		return (NULL);
 	else
 	{
+	//	printf("content word = %s \n", ((t_words *)content)->word );
 		new = malloc(sizeof(t_list));
 		if (new == NULL)
 			return (NULL);
@@ -82,10 +77,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *))
 	if (lst)
 	{
 		if (lst->content)
-		{
 			(*del)(lst->content);
-	//		free(lst);
-		}
 		free(lst);
 	}
 }

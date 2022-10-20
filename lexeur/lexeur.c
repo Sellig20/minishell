@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexeur.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/22 14:41:59 by evsuits           #+#    #+#             */
+/*   Updated: 2022/09/27 14:56:45 by evsuits          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 
@@ -51,7 +61,6 @@ static	t_letters	*letters_init(char letter, int *i)
 		letters->token = TOK_PIPE;
 	else if (letter == '$' && *i != S_QUOTE_STATE)
 		letters->token = TOK_DOLL;
-//QTTENTION ICI FQUT QUE TU REGARDE SI LE SUIVANT EST UN ESPACE AUQUEL CAS LE DOLLAR EST TRAITE COMME uN word
 	else
 		letters->token = TOK_WORD;
 	return (letters);
@@ -66,11 +75,15 @@ void	visualize_t_letters(t_list **lst_letters)
 	i = 0;
 	while (tmp->next)
 	{
-		printf("1.maillon num %i : letter = %c, token = %i\n", i, ((t_letters *)tmp->content)->letter, ((t_letters *)tmp->content)->token);
+		printf("1.maillon num %i : letter = %c, token = %i\n", i,
+			((t_letters *)tmp->content)->letter,
+			((t_letters *)tmp->content)->token);
 		tmp = tmp->next;
 		i++;
 	}
-	printf("2.maillon num %i : letter = %c, token = %i\n", i, ((t_letters *)tmp->content)->letter, ((t_letters *)tmp->content)->token);
+	printf("2.maillon num %i : letter = %c, token = %i\n", i,
+		((t_letters *)tmp->content)->letter,
+		((t_letters *)tmp->content)->token);
 }
 
 int	pre_lexeur(char *line, t_list **lst_letters)
@@ -95,6 +108,5 @@ int	pre_lexeur(char *line, t_list **lst_letters)
 	if (*j != DEFAULT_STATE)
 		return (syntax_error(*lst_letters, 8), 1);
 	free(j);
-	//visualize_t_letters(lst_letters);
 	return (true);
 }

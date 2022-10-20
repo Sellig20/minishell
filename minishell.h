@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:35:03 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/14 15:38:45 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/19 19:25:58 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <errno.h>
+# include <signal.h>
 #include <sys/types.h>
 #include <dirent.h>
 
 #define false 0
 #define true 1
+
 
 typedef struct s_letters{
 	char		letter;
@@ -58,6 +60,12 @@ typedef struct s_cmdredir{
 typedef struct s_cpenv{
 	char	*one_env;
 }	t_cpenv;
+
+enum	e_builtin
+{
+	ECHO,
+	PWD,
+};
 
 enum	e_env
 {
@@ -108,6 +116,9 @@ typedef struct s_data{
 	int		n_option;
 	int		i_e;
 	int		outfile;
+	int		infile;
+	int		here_infile;
+	int		append_outfile;
 	int		flag;
 }	t_data;
 
@@ -136,34 +147,62 @@ enum	e_quote_state
 	D_QUOTE_STATE = 27,
 };
 
+enum	e_quote
+{
+	DEF = 120,
+	AF_SPAC = 121,
+};
+
 //main.c
 int			sizeof_string_tab(char **str);
+void		handle_sig_child(int sig);
+void		handle_sig_parent(int sig);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////LEXER
+//lexeur.c
 int			pre_lexeur(char *line, t_list **letters);
+
+//lexeur_lexical.c
 void		group_letters(t_list	**lst_letters, t_list **lst_words);
-t_words		*words_init(char *word, int token);
+t_words 	*words_init(char *word, int token);
+
+//lexeur_lexical_utils.c
+int			len_group_letters(t_list **tmp);
+char		*build_word(int len, t_list **tmp);
+
+//lexeur_grammatical.c
 void		syntax_error(t_list *tmp, int i);
 int			token_validity(t_list **lst_words);
 int			token_order(t_list **lst_words);
+int			check_redir(t_list *lst);
+//quotes.c
+char		*ft_expand_one_btw_quot(t_list **tmp, t_list **env, t_data *x);
+char		*ft_until_next_quot(t_list *tmp, t_list *end, t_list **env, t_data *x);
+t_list		*ft_find_end_quot(t_list *af_quot);
 
+//expand_btw_quot.c
+void		ft_expand_btw_quot(t_list **lst_words, t_list **env, t_data *x);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////PARSER
+//lim_spac.c
+void		ft_delete_space(t_list **lst_words);
+void		ft_lim_protection(t_list **lst_words);
 
 //////////DOLLAR//////////
-void	final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
-t_cmdredir *init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
-t_list	**ft_expand_cmd(t_list **segment, t_list **envcp, t_data *x);
-t_list	**ft_expand_redir(t_list **segment, t_list **envcp, t_data *x);
-int	ft_check_after_doll(char *word);
+void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
+t_cmdredir	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
+t_list		**ft_expand_cmd(t_list **segment, t_list **envcp, t_data *x);
+t_list		**ft_expand_redir(t_list **segment, t_list **envcp, t_data *x);
+int			ft_check_after_doll(char *word);
 
 //////////EXPAND//////////
- char	*ft_result(t_list **envcp, int res, char *word, t_data *x);
-// char	*ft_if_4(char *new_word, t_list **envcp, int len, int len_one_env, char *tmp_4, char *reste_4, int j4);
-// char	*ft_if_if_4(int j4, char *reste_4, char *new_word, char *tmp_4, char *nul_4);
-// char	*ft_if_3(char *new_word, int i, t_list **envcp, int len_one_env, int len, char *word, t_data *x);
-// char	*ft_if_2(char *new_word, int i, char *word, int h2);
-// char	*ft_if_1(char *new_word, int i, char *word, int h1);
+char		*ft_result(t_list **envcp, int res, char *word, t_data *x);
+
+//////////LINKED LISTS//////////
+void		ft_lstadd_back(t_list **alst, t_list *new);
+void		**ft_lstadd_back2(t_list **alst, t_list *new);
+t_list		*ft_lstnew(void * content);
+t_btw_pipes	*ft_add_back(t_btw_pipes *a_list, t_words **words);
+void    	ft_lstdelone(t_list *lst, void (*del)(void *));
+int			ft_lstsize(t_list **tmp);
 
 //////////PARSER//////////
 void		sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes);
@@ -190,7 +229,7 @@ char		**ft_get_path_in_env(t_data *x, t_list **cpenv);
 
 //////////ENVIRONNEMENT//////////
 void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
-t_cmdredir	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
+t_cmdredir 	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
 t_list		**ft_expand(t_list **words, t_list **envcp, t_data *x);
 void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
 int			ft_check_after_doll(char *word);
@@ -198,14 +237,26 @@ void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
 t_words 	*ft_init_cpenv(char *one_env, int token);
 t_cpenv 	*ft_init_cpenv_kezako(char *one_env);
 
+//////////EXECUTION//////////
+void		ft_organize_execution(t_data *x, t_list **after_doll, t_list **cpenv);
+void		ft_execution_nopipe(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_processus_nopipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
+void		ft_execution_organisation(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_execution_pipe(t_list **after_doll, t_list **cpenv, t_data *x, int nb_cmd);
+void		ft_processus_pipe_1(t_list *tmp, t_data *x, t_list **cpenv);
+void	ft_processus_pipe_2(t_list **tmpafterd, t_data *x, t_list **cpenv);
+void		ft_processus_pipe_3(t_list *tmp, t_data *x, t_list **cpenv);
+// void		ft_catch_file_tekflemme(t_list **after_doll, t_data *x);
+void		ft_catch_file_tekinfile(t_list **after_doll, t_list *redir, t_data *x);
+void		ft_catch_file_tekoutfile(t_list **after_doll, t_list *redir, t_data *x);
+int			ft_is_builtin(t_list **tmp, t_data *x, t_list**cpenv);
+
 //////////CHECK FILES AN REDIRECTION//////////
-void	ft_catch_file(t_list **redir, t_data *x, t_list **cpenv);
+void		ft_catch_file(t_list **after_doll, t_data *x, t_list **envcp);
 int			ft_read_outfile(char *outfile);
 int			ft_read_infile(char *infile);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////UTILS
-
-//////////LIBFT & UTILS//////////XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx
+//////////LIBFT//////////XXXXXXXXXXXXXXXXxx
 char		**ft_split(char const *s, char c);
 char		*ft_strjoin(char const *s1, char const *s2);
 size_t		ft_strlen(const char *s);
@@ -218,15 +269,7 @@ int			ft_strcmp(const char *s1, const char *s2);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 void		ft_lstadd_front(t_list **alst, t_list *new);
 int			ft_strcmp(const char *s1, const char *s2);
-
-//////////LINKED LISTS//////////XXXXXXXXXXXXXXXXXXXXXXXXXX
-void		ft_lstadd_back(t_list **alst, t_list *new);
-void		**ft_lstadd_back2(t_list **alst, t_list *new);
-t_list		*ft_lstnew(void * content);
-t_btw_pipes	*ft_add_back(t_btw_pipes *a_list, t_words **words);
-void		ft_lstdelone(t_list *lst, void (*del)(void *));
-int			ft_lstsize(t_list **lst);
-
+char		*ft_itoa(int n);
 //////////FREE AND CLEAR//////////
 void		ft_lst_clear(t_list **lst, void (*del)(void *));
 void		ft_free_letters(void *content);
@@ -245,33 +288,8 @@ void		ft_visualize_cmd_redir(t_list **list);
 void		visualize_string_tab(char **str);
 void		visualize_t_words(t_list **lst_words);
 
-//////////ERROR FUNCTIONS//////////
-void		ft_error_command_not_found(char *cmd);
-int			ft_exist_error(char *infile);
-int			ft_exist_error_directory(char *infile);
-int			ft_perm_error(char *file);
-int			ft_is_null(char *cmd);
-int			ft_is_space(char *cmd);
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////EXECUTION
-
-//////////EXECUTION//////////
-void		ft_organize_execution(t_data *x, t_list **after_doll, t_list **cpenv);
-void		ft_execution_nopipe(t_list **after_doll, t_list **cpenv, t_data *x);
-void		ft_processus_nopipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
-void		ft_execution_organisation(t_list **after_doll, t_list **cpenv, t_data *x);
-void		ft_execution_pipe(t_list **after_doll, t_list **cpenv, t_data *x, int nb_cmd);
-void		ft_processus_pipe_1(t_list *tmp, t_data *x, t_list **cpenv);
-void		ft_processus_pipe_2(t_list *tmp, t_data *x, t_list **cpenv);
-void		ft_processus_pipe_3(t_list *tmp, t_data *x, t_list **cpenv);
-void		ft_catch_file_tekflemme(t_list **after_doll, t_data *x);
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////BUILTINS
-
-int			ft_is_builtin(t_list **after_doll, t_data *x, t_list **cpenv);
-//void			ft_echo_n_option(t_list *cmd, char *str, int i, int n_option);
-
 //export.c
+int			ft_export(t_list *cmdnext, t_list **cpenv);
 void		ft_export_solo(t_list **cpenv);
 void		ft_write_exp(t_list **exp);
 void		ft_export_error(char *cmdnext);
@@ -286,11 +304,13 @@ void		ft_insert(t_list *new, t_list *tmp);
 void		call_case(int index_eq, t_words *content, t_list **cpenv);
 void		case_no_eq(char *cmd, t_list **cpenv);
 void		case_eq(int index_eq, char *cmd, t_list **cpenv);
-void		case_pl_eq(int index_eq, char *cmd, t_list **cpenv);
+void		case_pl_eq(int index_eq, char *cmd, t_list **cpenv, int i);
 
 //unset.c
 int			ft_unset_others(t_list *tmp, char *before_eq);
 int			ft_unset_first(t_list *tmp, char *before_eq);
+//void		ft_unset(t_list *cmd, t_list **cpenv);
+
 
 typedef struct s_builtin_value	t_builtin_value;
 typedef int						(*t_fct)(t_list *cmd, t_list **cpenv, t_data *x);
@@ -316,5 +336,4 @@ static t_builtin_value	const g_lookup[] = {
 	{"env", ft_fonction},
 	{0},
 };
-
 #endif

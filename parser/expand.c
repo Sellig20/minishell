@@ -6,11 +6,13 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/30 12:40:31 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/07 14:55:50 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/13 22:30:58 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern int	g_status;
 
 char	*ft_methode_1(char *new_word, char *word, t_dollar *d, t_data *x)
 {
@@ -74,11 +76,9 @@ char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x)
 {
 	dprintf(2, "METHODE 3 pour %s\n", word);
 	char	*tmp;
-	int		j;
 	int		i;
 
 	tmp = NULL;
-	j = 0;
 	i = 0;
 	while (d->envcp)
 	{
@@ -189,13 +189,11 @@ char	*ft_result(t_list **cpenv, int res, char *word, t_data *x)
 {
 	t_dollar	d;
 	char		*new_word;
-	int			i;
 
 	ft_bzero(&d, sizeof(d));
 	d.len_word = ft_strlen(word);
 	d.envcp = *cpenv;
 	new_word = NULL;
-	i = 0;
 	if (res == 1)
 		new_word = ft_methode_1(new_word, word, &d, x);
 	if (res == 2)
@@ -204,6 +202,8 @@ char	*ft_result(t_list **cpenv, int res, char *word, t_data *x)
 		new_word = ft_methode_3(new_word, word, &d, x);
 	if (res == 4)
 		new_word = ft_methode_4(new_word, word, &d);
+	if (res == 5)
+		new_word = ft_itoa(g_status);
 	return (new_word);
 }
 

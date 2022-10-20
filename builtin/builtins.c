@@ -6,11 +6,12 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:23:01 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/14 17:05:31 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:20:03 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
 
 int	ft_fonction(t_list *cmd, t_list **cpenv, t_data *x)
 {
@@ -60,3 +61,30 @@ int	ft_is_builtin(t_list **after_doll, t_data *x, t_list **cpenv)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
+
+
+/*
+void	ft_env(t_list **cpenv)
+{
+	t_list	*tmp;
+	t_words	*content;
+	char	*before_eq;
+	char	*after_eq;
+	int		index_eq;
+
+	tmp = *cpenv;
+	while (tmp)
+	{
+		content = (t_words *) tmp->content;
+		if (content->token == TOK_ENV)
+		{
+			index_eq = check_if_equal(content->word);
+			before_eq = ft_strndup(content->word, index_eq);
+			after_eq = ft_substr(content->word,
+					index_eq + 1, ft_strlen(content->word));
+			printf("%s=%s\n", before_eq, after_eq);
+			free(before_eq);
+			free(after_eq);
+		}
+		tmp = tmp->next;
+}*/

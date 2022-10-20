@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 15:43:55 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/14 13:17:50 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:20:07 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,8 @@ char	*ft_cd_back(char *tmp)
 
 char	*ft_check_str(char *str)
 {
-	int	i;
 	DIR	*d;
 
-	i = 0;
 	d = opendir(str);
 	if (d == NULL)
 	{
@@ -115,12 +113,10 @@ int	ft_cd_organisation(char *tmp, t_list **envcp, char *str, int i)
 int	ft_cd(t_list *cmd, t_list **cpenv, t_data *x)
 {
 	char	*str;
-	int		len;
 	int		i;
 	char	*tmp;
 
 	i = 0;
-	len = 0;
 	tmp = NULL;
 	(void)x;
 	if (ft_lstsize(&cmd) > 2)
@@ -129,7 +125,6 @@ int	ft_cd(t_list *cmd, t_list **cpenv, t_data *x)
 		str = ((t_words *)cmd->next->content)->word;
 	else
 		str = "~";
-	len = ft_strlen(str);
 	if (ft_cd_organisation(tmp, cpenv, str, i) != EXIT_SUCCESS)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);

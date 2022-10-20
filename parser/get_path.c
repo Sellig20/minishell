@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 13:19:26 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/14 16:30:45 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/13 13:34:47 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ char	*ft_path_construction(char *co, t_data *x, t_list **cpenv)//ft_path_command
 	path_env = ft_get_path_in_env(x, cpenv); //on obtient notre tableau avec a chaque rangee, un bout de path de env
 	if (!path_env)
 		return (ft_error_command_not_found(co), NULL);
-
 	option = ft_split(co, ' ');
 	if (!option)
 	{

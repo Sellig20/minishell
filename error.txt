@@ -1,0 +1,22 @@
+
+//////////////////JEANNOT///////////////////////////////
+1. $lettre ->segfault (methode 3)
+2. Command not found -> doit renvoyer que la cmd pas ses args
+3. fix les redirection 
+4. echo
+5. pwd
+6. cd
+
+//////////////////EVOT//////////////////////////////////
+1. $"" ->segfault;
+2. $"""HOME" ou """""""salut" ->donne respectivement (null), HOME ou (null), (null), (null), salut
+			au lieu de HOME et salut;
+3. Fix unset;
+4. Merge le export;
+5. Faire le exit;
+6. gerer le g_status 
+7. $? dans ft_result
+
+///////////////////BOTH/////////////////////////////////
+1. $? dans ft_result
+2. 

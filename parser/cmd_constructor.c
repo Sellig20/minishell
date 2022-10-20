@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/14 16:31:24 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/18 17:51:13 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_cmd_and_env(t_data *x, char *co, t_list **cpenv)//if env else pas env
 		if (access((x->option[0]), X_OK) == 0)
 			*x->pc = *(x->option[0]);
 		else
-			ft_error_command_not_found(co);
+			write(2, "ERROR : PAS DE ENV ET PAS DE ABSOLUTE PATH = TU DEGAGES JE SUIS PAS DEVIN BIATCH\n", 35);
 	}
 	else
 	{

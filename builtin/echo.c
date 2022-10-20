@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 11:17:56 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/14 18:48:39 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:20:17 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	ft_echo_n_option_yes_not_only(t_list *cmd, char *str, int has_writ, t_data *x)
 {
-	int	i;
+	//int	i;
 
-	i = 0;
+	//i = 0;
 	//dprintf(2, "yes | not only => %s\n", str);
 	ft_putstr_fd(str, x->outfile);
 	has_writ = 1;

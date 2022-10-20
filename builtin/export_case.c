@@ -19,7 +19,7 @@ void	call_case(int index_eq, t_words *content, t_list **cpenv)
 	else if (index_eq > 0)
 		case_eq(index_eq, content->word, cpenv);
 	else
-		case_pl_eq(index_eq, content->word, cpenv);
+		case_pl_eq(index_eq, content->word, cpenv, 0);
 }
 
 void	case_no_eq(char *cmd, t_list **cpenv)
@@ -65,48 +65,50 @@ void	case_eq(int index_eq, char *cmd, t_list **cpenv)
 	ft_lstadd_back(cpenv, new);
 }
 
-void	case_pl_eq(int index_eq, char *cmd, t_list **cpenv)
+int	replace_in_env(t_list **tmp, char *before_eq, char *with_eq, char *after_eq)
+{
+	char	*swp;
+	t_words	*content;
+
+	swp = NULL;
+	content = (t_words *)(*tmp)->content;
+	if (strcmp(before_eq, content->word) == 0)
+	{
+		swp = ft_strjoin(with_eq, after_eq);
+		free(content->word);
+		content->word = ft_strndup(swp, ft_strlen(swp));
+		free(swp);
+		return (1);
+	}
+	else if (ft_strncmp(with_eq, content->word, ft_strlen(with_eq)) == 0)
+	{
+		swp = ft_strjoin(content->word, after_eq);
+		free(content->word);
+		content->word = ft_strndup(swp, ft_strlen(swp));
+		free(swp);
+		return (1);
+	}
+	free(swp);
+	*tmp = (*tmp)->next;
+	return (0);
+}
+
+void	case_pl_eq(int index_eq, char *cmd, t_list **cpenv, int i)
 {
 	t_list	*new;
 	t_list	*tmp;
-	t_words	*content;
 	char	*with_eq;
 	char	*before_eq;
 	char	*after_eq;
-	int		i;
 
 	new = NULL;
 	index_eq *= (-1);
 	tmp = *cpenv;
-	content = (t_words *) tmp->content;
 	before_eq = ft_strndup(cmd, index_eq - 1);
 	with_eq = ft_strjoin(before_eq, "=");
-	free(before_eq);
 	after_eq = ft_substr(cmd, index_eq + 1, ft_strlen(cmd));
-	i = 0;
 	while (tmp && i == 0)
-	{
-		before_eq = ft_strndup(cmd, index_eq - 1);
-		content = (t_words *) tmp->content;
-		if (strcmp(before_eq, content->word) == 0)
-		{
-			free(before_eq);
-			before_eq = ft_strjoin(with_eq, after_eq);
-			free(content->word);
-			content->word = ft_strndup(before_eq, ft_strlen(before_eq));
-			i = 1;
-		}
-		else if (ft_strncmp(with_eq, content->word, index_eq) == 0)
-		{
-			free(before_eq);
-			before_eq = ft_strjoin(content->word, after_eq);
-			free(content->word);
-			content->word = ft_strndup(before_eq, ft_strlen(before_eq));
-			i = 1;
-		}
-		free(before_eq);
-		tmp = tmp->next;
-	}
+		i = replace_in_env(&tmp, before_eq, with_eq, after_eq);
 	if (i == 0)
 	{
 		before_eq = ft_strjoin(with_eq, after_eq);

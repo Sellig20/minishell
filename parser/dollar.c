@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 19:33:59 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/13 14:11:30 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/13 22:35:43 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	ft_check_after_doll(char *word)
 	int	i;
 
 	i = 0;
+	if (word[0] == '?')
+		return (5);
 	if (word[i] >= '0' && word[i] <= '9')
 		return (1);
 	else if (!((word[i] >= 'a' && word[i] <= 'z')

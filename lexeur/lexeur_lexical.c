@@ -3,32 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexeur_lexical.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 14:19:08 by evsuits           #+#    #+#             */
-/*   Updated: 2022/09/30 19:55:29 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:37:18 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	len_group_letters(t_list **lst_letters)
-{
-	t_list	*tmp;
-	int		len;
-
-	tmp = *lst_letters;
-	if (!tmp)
-		return (0);
-	len = 1;
-	while (tmp->next && ((t_letters *) tmp->content)->token
-		== ((t_letters *) tmp->next->content)->token)
-	{
-		len++;
-		tmp = tmp->next;
-	}
-	return (len);
-}
 
 t_words	*words_init(char *word, int token)
 {
@@ -42,63 +24,100 @@ t_words	*words_init(char *word, int token)
 	return (list);
 }
 
-char	*build_word(int len, t_list **tmp)
+void	diff_doll(t_list **tmp)
+{
+	if (((t_letters *)(*tmp)->content)->token == TOK_DOLL
+		&& (((*tmp)->next
+		&& ((t_letters *)(*tmp)->next->content)->token == TOK_SPAC)
+			|| !((*tmp)->next)
+			|| ((t_letters *)(*tmp)->next->content)->token == TOK_PIPE))
+		((t_letters *)(*tmp)->content)->token = TOK_WORD;
+	if (((t_letters *)(*tmp)->content)->token == TOK_DOLL
+		&& (((*tmp)->next
+		&& ((t_letters *)(*tmp)->next->content)->token == TOK_QUOT)
+			|| !((*tmp)->next))
+		&& (((*tmp)->next->next
+		&& ((t_letters *)((*tmp)->next->next)->content)->token == TOK_SPAC)
+			|| !((*tmp)->next->next)))
+		((t_letters *)(*tmp)->content)->token = TOK_WORD;
+	if (((t_letters *)(*tmp)->content)->token == TOK_DOLL
+		&& (((*tmp)->next
+		&& ((t_letters *)(*tmp)->next->content)->token == TOK_QUOT)
+			|| !((*tmp)->next)))
+		*tmp = (*tmp)->next;
+}
+
+int	put_one_space(t_list **tmp, t_list **lst_words, t_list *new)
 {
 	char	*word;
-	int		index_word;
+	int		token;
 
-	index_word = 0;
-	if (len < 1)
-		return (NULL);
-	word = malloc(sizeof(char) * (len + 1));
-	if (word == NULL)
-		return (NULL);
-	while (index_word < len)
-	{
-		word[index_word] = ((t_letters *)(*tmp)->content)->letter;
-		index_word++;
+	word = NULL;
+	while (*tmp && (*tmp)->next
+		&& ((t_letters *)(*tmp)->next->content)->token == TOK_SPAC
+		&& (((t_letters *)(*tmp)->content)->token == TOK_SPAC))
 		*tmp = (*tmp)->next;
+	if (*tmp && (*tmp)->next
+		&& (((t_letters *)(*tmp)->content)->token == TOK_SPAC))
+	{
+		token = ((t_letters *)(*tmp)->content)->token;
+		new = ft_lstnew((void *) words_init(" ", token));
+		ft_lstadd_back(lst_words, new);
+		free(word);
+		*tmp = (*tmp)->next;
+		return (1);
 	}
-	word[index_word] = '\0';
-	return (word);
+	else if (!((*tmp)->next)
+		&& (((t_letters *)(*tmp)->content)->token == TOK_SPAC))
+	{
+		*tmp = (*tmp)->next;
+		return (1);
+	}
+	return (0);
+}
+
+void	put_word(t_list **lst_words, t_list **tmp)
+{
+	t_list		*new;
+//	t_list		*swp;
+	int			len;
+	int			token;
+	char		*word;
+
+	token = ((t_letters *)(*tmp)->content)->token;
+	word = NULL;
+	new = NULL;
+	if (token == TOK_QUOT)
+		len = 42;
+	else
+		len = len_group_letters(tmp);
+//	printf("len = %i\n", len);
+	word = build_word(len, tmp);
+	new = ft_lstnew((void *) words_init(word, token));
+	ft_lstadd_back(lst_words, new);
+	free(word);
+/*	if (token == TOK_QUOT)
+	{
+		*tmp = (*tmp)->next;
+//		free(*tmp);
+//		*tmp = (*tmp)->next;
+	}*/
 }
 
 void	group_letters(t_list **lst_letters, t_list **lst_words)
 {
 	t_list		*tmp;
 	t_list		*new;
-	int			len;
-	int			token;
-	char		*word;
 
 	*lst_words = NULL;
-	word = NULL;
 	tmp = *lst_letters;
-	len = 0;
+	new = NULL;
 	while (tmp)
 	{
-		while (tmp && (((t_letters *) tmp->content)->token == TOK_SPAC
-				|| ((t_letters *) tmp->content)->token == TOK_QUOT))
-			tmp = tmp->next;
-		if (tmp)
+		if (tmp && put_one_space(&tmp, lst_words, new) == 0)
 		{
-			if (((t_letters *) tmp->content)->token == TOK_DOLL
-				&& ((tmp->next && ((t_letters *)(tmp->next)->content)->token == TOK_SPAC)
-				|| !(tmp->next) || ((t_letters *)tmp->next->content)->token == TOK_PIPE))
-				((t_letters *)tmp->content)->token = TOK_WORD;
-			if (((t_letters *)tmp->content)->token == TOK_DOLL
-				&& ((tmp->next && ((t_letters *)(tmp->next)->content)->token == TOK_QUOT)
-				|| !(tmp->next)))
-				tmp = tmp->next;
-			else
-			{
-				token = ((t_letters *) tmp->content)->token;
-				len = len_group_letters(&tmp);
-				word = build_word(len, &tmp);
-				new = ft_lstnew((void *) words_init(word, token));
-				ft_lstadd_back(lst_words, new);
-				free(word);
-			}
+			diff_doll(&tmp);
+			put_word(lst_words, &tmp);
 		}
 	}
 }

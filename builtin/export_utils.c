@@ -6,7 +6,7 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:22:45 by evsuits           #+#    #+#             */
-/*   Updated: 2022/09/27 15:01:42 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/13 21:40:08 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	check_if_equal(char *cmd)
 	int	i;
 
 	i = 0;
+	if (cmd[i] == '+' || cmd[i] == '=')
+		return (-42);
 	while (cmd[i])
 	{
 		if (cmd[i + 1] && cmd[i] == '+' && cmd[i + 1] == '=')
@@ -59,6 +61,9 @@ int	check_if_alphanum(char *cmdnext)
 void	ft_insert(t_list *new, t_list *tmp)
 {
 	t_list	*swp;
+
+	if (new == NULL || tmp == NULL)
+		return ;
 
 	swp = tmp->next;
 	tmp->next = new;

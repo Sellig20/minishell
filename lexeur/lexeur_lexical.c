@@ -6,7 +6,7 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 14:19:08 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/17 20:37:18 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/24 13:15:13 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ int	put_one_space(t_list **tmp, t_list **lst_words, t_list *new)
 void	put_word(t_list **lst_words, t_list **tmp)
 {
 	t_list		*new;
-//	t_list		*swp;
 	int			len;
 	int			token;
 	char		*word;
@@ -91,17 +90,10 @@ void	put_word(t_list **lst_words, t_list **tmp)
 		len = 42;
 	else
 		len = len_group_letters(tmp);
-//	printf("len = %i\n", len);
 	word = build_word(len, tmp);
 	new = ft_lstnew((void *) words_init(word, token));
 	ft_lstadd_back(lst_words, new);
 	free(word);
-/*	if (token == TOK_QUOT)
-	{
-		*tmp = (*tmp)->next;
-//		free(*tmp);
-//		*tmp = (*tmp)->next;
-	}*/
 }
 
 void	group_letters(t_list **lst_letters, t_list **lst_words)

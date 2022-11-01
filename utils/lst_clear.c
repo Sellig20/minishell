@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lst_clear.c                                        :+:      :+:    :+:   */
+/*   lstclear.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	ft_lst_clear_cmd_dir(t_list **lst, void (*del)(void *))
+void	ft_lstclear_cmd_dir(t_list **lst, void (*del)(void *))
 {
 	t_list	*tmp;
 
@@ -26,7 +26,7 @@ void	ft_lst_clear_cmd_dir(t_list **lst, void (*del)(void *))
 	}
 }
 
-void	ft_lst_clear(t_list **lst, void (*del)(void *))
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
 	t_list	*tmp;
 

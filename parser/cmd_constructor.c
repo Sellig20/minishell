@@ -6,94 +6,70 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/18 17:51:13 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:44:22 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_cmd_and_env(t_data *x, char *co, t_list **cpenv)//if env else pas env
+char	*ft_no_env_access_return(t_list **cmd, t_data *x)
 {
-	t_list *tmp_cpenv;
+	t_list	*tmp_cmd;
+	tmp_cmd = *cmd;
+	x->option = ft_split(((t_words *)tmp_cmd->content)->word, ' ');
+	if (access((x->option[0]), X_OK) == 0)
+		x->pc = (x->option[0]);
+	else
+		return (ft_error_command_not_found(x->option[0]), NULL);
+	return (x->pc);
+}
+
+int	ft_cmd_and_env(t_data *x, t_list **cmd, t_list **cpenv)
+{
+	t_list	*tmp_cpenv;
+	t_list	*tmp_cmd;
+
 	tmp_cpenv = *cpenv;
+	tmp_cmd = *cmd;
 	if (!tmp_cpenv)
-	{
-		x->option = ft_split(co, ' ');
-		if (access((x->option[0]), X_OK) == 0)
-			*x->pc = *(x->option[0]);
-		else
-			write(2, "ERROR : PAS DE ENV ET PAS DE ABSOLUTE PATH = TU DEGAGES JE SUIS PAS DEVIN BIATCH\n", 35);
-	}
+		x->pc = ft_no_env_access_return(&tmp_cmd, x);
 	else
 	{
-		x->option = ft_split(co, ' ');
-		if (access((x->option[0]), X_OK) == 0) ////si env et que c le chemin absolu, rien besoin de construire on envoie direct
-			*x->pc = *(x->option[0]);
+		x->option = get_env(tmp_cmd);
+		if (x->option[0][0] && x->option[0][0] == '/' && access((x->option[0]), X_OK) == 0)
+			x->pc = (x->option[0]);
 		else
 		{
-			x->pc = ft_path_construction(co, x, cpenv); //join slash etc
+			x->pc = ft_path_construction(cmd, x, cpenv);
+			if (x->pc == NULL)
+				return (EXIT_FAILURE);
 			ft_free_array(x->option);
-			x->option = ft_get_ultime_cmd(co, x->pc);
+			x->option = ft_get_ultime_cmd(&tmp_cmd, x, x->pc);
+			if (x->option == NULL)
+				return (EXIT_FAILURE);
 		}
 	}
-}
-
-int	ft_strlen_cmd(t_list **cmd)
-{
-	int		len;
-	t_list	*tmp;
-
-	tmp = *cmd;
-	len = 0;
-	while (tmp)
-	{
-		len += ft_strlen(((t_words *)tmp->content)->word);
-		tmp = tmp->next;
-	}
-	return (len);
-}
-
-char	*ft_conv_cmd_str(t_list **cmd, char *str)
-{
-	t_list	*tmp;
-	char	*tmp_str;
-
-	tmp = *cmd;
-	str = NULL;
-	while (tmp)
-	{
-		tmp_str = ((t_words *)tmp->content)->word;
-		str = ft_strjoin(str, tmp_str);
-		str = ft_strjoin(str, " ");
-		tmp = tmp->next;
-	}
-	return (str);
+	return (EXIT_SUCCESS);
 }
 
 int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 {
 	t_list	*cmd_line;
-	t_list	*tmp;
-	char	*str;
 
-	tmp = *cmd;
 	cmd_line = *cmd;
 	(void)cpenv;
 	x->option = NULL;
 	x->pc = NULL;
-	str = malloc(sizeof(char) * (ft_strlen_cmd(&tmp) + 1));
-	str = ft_conv_cmd_str(&tmp,  str);
-	if (cmd_line->content == NULL)
-		write(2, "☆☆☆☆☆ PAS DE COMMANDE DANS CE MAILLON ☆☆☆☆☆\n", 25);
+	if (!cmd || !(*cmd)|| (!cmd_line) || !(((t_words *) cmd_line->content)->word))
+		return (EXIT_FAILURE);
 	else
 	{
-		if (cmd_line->next)///si ya une option a la commande
-			ft_cmd_and_env(x, str,  cpenv);
-		else//si ya pas doption genre ls ou wc seuls
-		{
-			ft_cmd_and_env(x, ((t_words *)cmd_line->content)->word, cpenv);
-			x->option[1] = NULL;
-		}
+		if (ft_cmd_and_env(x, &cmd_line, cpenv) != EXIT_SUCCESS)
+			return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
 }
+
+// dprintf(2, "x->option 0 === %s\n", x->option[0]);
+// dprintf(2, "x->option 1 === %s\n", x->option[1]);
+// dprintf(2, "x->option 2 === %s\n", x->option[2]);

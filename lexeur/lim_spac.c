@@ -6,11 +6,27 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 21:44:11 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/13 21:44:15 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/27 00:31:09 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+static void	del_first(t_list **tmp, t_list **lst_words)
+{
+	t_list	*swp;
+
+	*tmp = *lst_words;
+	swp = NULL;
+	if (*tmp && ((t_words *)(*tmp)->content)->token == TOK_SPAC)
+	{
+		if ((*tmp)->next)
+			swp = (*tmp)->next;
+		*lst_words = swp;
+		ft_lstdelone(*tmp, ft_free_words);
+		*tmp = *lst_words;
+	}
+}
 
 void	ft_delete_space(t_list **lst_words)
 {
@@ -19,53 +35,21 @@ void	ft_delete_space(t_list **lst_words)
 
 	tmp = *lst_words;
 	swp = NULL;
-	if (((t_words *) tmp->content)->word == NULL && tmp->next && ((t_words *) tmp->next->content)->token == TOK_WORD/* && check_redir(tmp->next) == 0*/)
-	{
-	//	if (tmp->next)
-		swp = tmp->next;
-		*lst_words = swp;
-//		printf("cas 1 : je delete tmp=%s\n",((t_words *) tmp->content)->word);
-		ft_lstdelone(tmp, ft_free_words);
-		tmp = *lst_words;
-	}
-//	printf("apres cas 1 :tmp=%s\n",((t_words *) tmp->content)->word);
-	if (tmp && ((t_words *) tmp->content)->token == TOK_SPAC)
-	{
-		if (tmp->next)
-			swp = tmp->next;
-		*lst_words = swp;
-//		printf("cas 2 : je delete tmp=%s\n",((t_words *) tmp->content)->word);
-		ft_lstdelone(tmp, ft_free_words);
-		tmp = *lst_words;
-	}
-//	printf("apres cas 1 et 2 : tmp=%s\n",((t_words *) tmp->content)->word);
+	del_first(&tmp, lst_words);
 	while (tmp && tmp->next)
 	{
 		swp = NULL;
-//		printf("dans while tmp=%s\n",((t_words *) tmp->content)->word);
-		if (((t_words *) tmp->content)->word == NULL && tmp->next && ((t_words *) tmp->next->content)->token == TOK_WORD)
+		if (tmp && tmp->next
+			&& ((t_words *) tmp->next->content)->token == TOK_SPAC)
 		{
 			if (tmp->next->next)
 				swp = tmp->next->next;
-//			*lst_words = swp;
-//			printf("cas 3: on delete tmp=%s\n",((t_words *) tmp->next->content)->word);
-			ft_lstdelone(tmp->next, ft_free_words);
-			tmp->next = swp;
-			tmp = tmp->next;
-		}
-		else if (tmp && tmp->next && ((t_words *) tmp->next->content)->token == TOK_SPAC)
-		{
-			if (tmp->next->next)
-				swp = tmp->next->next;
-//			printf("cas 4: on delete tmp=%s\n",((t_words *) tmp->next->content)->word);
 			ft_lstdelone(tmp->next, ft_free_words);
 			tmp->next = swp;
 			tmp = tmp->next;
 		}
 		else
 			tmp = tmp->next;
-//		printf("FIN WHILE : tmp=%s\n",((t_words *) tmp->content)->word);
-	
 	}
 }
 

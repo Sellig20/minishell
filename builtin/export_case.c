@@ -6,7 +6,7 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:22:34 by evsuits           #+#    #+#             */
-/*   Updated: 2022/09/27 15:01:30 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/27 00:45:16 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	case_no_eq(char *cmd, t_list **cpenv)
 	}
 	if (check == 0)
 	{
-		new = ft_lstnew((void *) ft_init_cpenv(cmd, TOK_EXP));
+		new = ft_lstnew((void *) words_init(cmd, TOK_EXP));
 		ft_lstadd_back(cpenv, new);
 	}
 	free(with_eq);
@@ -60,7 +60,7 @@ void	case_eq(int index_eq, char *cmd, t_list **cpenv)
 	with_eq = ft_substr(cmd, 0, index_eq);
 	ft_unset_first(*cpenv, with_eq);
 	ft_unset_others(*cpenv, with_eq);
-	new = ft_lstnew((void *) ft_init_cpenv(cmd, TOK_ENV));
+	new = ft_lstnew((void *) words_init(cmd, TOK_ENV));
 	free(with_eq);
 	ft_lstadd_back(cpenv, new);
 }
@@ -72,20 +72,16 @@ int	replace_in_env(t_list **tmp, char *before_eq, char *with_eq, char *after_eq)
 
 	swp = NULL;
 	content = (t_words *)(*tmp)->content;
-	if (strcmp(before_eq, content->word) == 0)
+	if (ft_strcmp(before_eq, content->word) == 0
+		|| ft_strncmp(with_eq, content->word, ft_strlen(with_eq)) == 0)
 	{
-		swp = ft_strjoin(with_eq, after_eq);
+		if (ft_strcmp(before_eq, content->word) == 0)
+			swp = ft_strjoin(with_eq, after_eq);
+		else
+			swp = ft_strjoin(content->word, after_eq);
 		free(content->word);
 		content->word = ft_strndup(swp, ft_strlen(swp));
-		free(swp);
-		return (1);
-	}
-	else if (ft_strncmp(with_eq, content->word, ft_strlen(with_eq)) == 0)
-	{
-		swp = ft_strjoin(content->word, after_eq);
-		free(content->word);
-		content->word = ft_strndup(swp, ft_strlen(swp));
-		free(swp);
+		content->token = TOK_ENV;
 		return (1);
 	}
 	free(swp);
@@ -111,11 +107,12 @@ void	case_pl_eq(int index_eq, char *cmd, t_list **cpenv, int i)
 		i = replace_in_env(&tmp, before_eq, with_eq, after_eq);
 	if (i == 0)
 	{
+		free(before_eq);
 		before_eq = ft_strjoin(with_eq, after_eq);
 		new = ft_lstnew((void *) words_init(before_eq, TOK_ENV));
 		ft_lstadd_back(cpenv, new);
-		free(before_eq);
 	}
+	free(before_eq);
 	free(after_eq);
 	free(with_eq);
 }

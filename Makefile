@@ -6,7 +6,7 @@
 #    By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/22 14:34:45 by evsuits           #+#    #+#              #
-#    Updated: 2022/10/13 22:33:36 by evsuits          ###   ########.fr        #
+#    Updated: 2022/11/01 19:40:32 by jecolmou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,20 +16,26 @@ SRCS= main.c \
 	  ./lexeur/lexeur_lexical.c \
 	  ./lexeur/lexeur_lexical_utils.c \
 	  ./lexeur/lexeur_grammatical.c \
-	  ./lexeur/quotes.c \
+	  ./lexeur/del.c \
 	  ./lexeur/lim_spac.c \
-	  ./lexeur/expand_btw_quot.c \
+	  ./lexeur/new_expand.c \
 	  ./parser/new_parser.c \
 	  ./parser/parser_cmd_redir.c \
 	  ./parser/environnement.c \
-	  ./parser/parser_redir_files.c \
+	  ./parser/heredoc.c \
+	  ./parser/open_error_files.c \
+	  ./parser/open_files.c \
 	  ./parser/get_path.c \
 	  ./parser/gestion.c \
 	  ./parser/expand.c \
-	  ./parser/dollar.c \
+	  ./parser/executable.c \
 	  ./parser/cmd_constructor.c\
 	  ./execution/execution.c \
 	  ./execution/execution_no_pipe.c \
+	  ./execution/redirection_pipe.c \
+	  ./execution/redirection_no_pipe.c \
+	  ./execution/execution_utils.c \
+	  ./execution/execution_organisation.c \
 	  ./utils/utils.c \
 	  ./utils/utils2.c \
 	  ./utils/lst_clear.c \
@@ -50,6 +56,9 @@ SRCS= main.c \
 	  ./builtin/pwd.c \
 	  ./builtin/echo.c \
 	  ./builtin/cd.c \
+	  ./builtin/exit.c \
+	  ./builtin/exit_utils.c \
+	  ./builtin/env.c \
 
 CC= gcc
 

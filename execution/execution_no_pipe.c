@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 17:56:57 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/20 13:44:48 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/01 19:38:11 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,98 +14,107 @@
 
 extern int	g_status;
 
-int	ft_lstsize_bru(t_list **lst)
-{
-	int			count;
-	t_list		*buffer;
-
-	count = 0;
-	buffer = *lst;
-	while (buffer)
-	{
-		buffer = buffer->next;
-		count++;
-	}
-	return (count);
-}
-
-void	ft_execution_organisation(t_list **after_doll, t_list **cpenv, t_data *x)
-{
-	t_list *tmp;
-	int nb_cmd;
-
-	tmp = *after_doll;
-	nb_cmd = ft_lstsize_bru(&tmp);
-	//ft_visualize_cmd_redir(&tmp);
-	(void)cpenv;
-	(void)x;
-	if (tmp->next)
-	{
-		//dprintf(2, "plusieurs pipe !\n");
-		ft_execution_pipe(&tmp, cpenv, x, nb_cmd);
-	}
-	else
-	{
-		//dprintf(2, "pas de pipe !\n");
-		ft_execution_nopipe(&tmp, cpenv, x);
-	}
-}
-
-void	ft_execution_nopipe(t_list **after_doll, t_list **cpenv, t_data *x)
+void	ft_execution_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv)
 {
 	t_list	*tmp;
 	t_list	*cmd;
 	t_list	*redir;
-	pid_t	processus;
 
-	tmp = *after_doll;
+	tmp = *cmdredir;
 	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
 	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
+	((t_cmdredir *)tmp->content)->process_id = fork();
+	if (((t_cmdredir *)tmp->content)->process_id < 0)
+		return (perror("Minimichel: fork: "));
+	signal(SIGQUIT, handle_sig_child);
+	signal(SIGINT, handle_sig_child);
+	if (((t_cmdredir *)tmp->content)->process_id == 0)
+		ft_processus_no_pipe(&cmd, &redir, x, cpenv);
+	else
+	{
+		waitpid(((t_cmdredir *)tmp->content)->process_id, &g_status, 0);
+		if (WIFEXITED(g_status))
+			g_status = WEXITSTATUS(g_status);
+		else if (WIFSIGNALED(g_status))
+			g_status = WTERMSIG(g_status) + 128;
+	}
+}
+
+void	ft_no_pipe_no_cmd_redir(t_list **redir, t_data *x)
+{
+	t_list	*tmp_redir;
+
+	tmp_redir = *redir;
+	x->flag_redir = 1;
+	x->flag_no_pipe_no_cmd_ok_redir = 1;
+	if (ft_is_redirection_in(&tmp_redir) == 1)
+		ft_no_pipe_redirection_in(&tmp_redir, x);
+	if (ft_is_redirection_out(&tmp_redir) == 1)
+		ft_no_pipe_redirection_out(&tmp_redir, x);
+}
+
+void	ft_no_pipe_is_executable(t_list **cmdredir, t_list **cpenv, t_data *x)
+{
+	t_list	*cmd;
+	t_list	*tmp;
+
+	tmp = *cmdredir;
+	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
+	x->pc = ft_is_executable(&cmd, x, cpenv);
+	if (x->pc == NULL)
+		ft_error_nsfod(((t_words *)cmd->content)->word);
+	x->flag_executable = 2;
+}
+
+void	ft_execution_no_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
+{
+	t_list	*tmp;
+	t_list	*cmd;
+	t_list	*redir;
+
+	tmp = *cmdredir;
+	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
+	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
+	ft_set_fdcmd(&tmp, x);
+	if (x->flag_stop == 2)
+		return ;
 	if (cmd->content)
 	{
 		if (ft_is_builtin(&tmp, x, cpenv) == 0)
 			return ;
-		else
-		{
-			processus = fork();
-			if (processus < 0)
-				return (perror("Minimichel: fork: "));
-			signal(SIGQUIT, handle_sig_child);
-			signal(SIGINT, handle_sig_child);
-			if (processus == 0)
-				ft_processus_nopipe(&cmd, &redir, x, cpenv);
-			else
-			{
-				waitpid(processus, &g_status, 0);
-				if (WIFEXITED(g_status))
-					g_status = WEXITSTATUS(g_status);
-				if (WIFSIGNALED(g_status))
-					g_status = WTERMSIG(g_status) + 128;
-			}
-			signal(SIGQUIT, SIG_IGN);
-		    signal(SIGINT, handle_sig_parent);
-			ft_free_array(x->option);
-		}
+		else if (ft_is_exe(&cmd, x, cpenv) == 0)
+			ft_no_pipe_is_executable(&tmp, cpenv, x);
+		ft_execution_no_pipe_annexe(&tmp, x, cpenv);
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, handle_sig_parent);
+		if (x->flag_executable == 2)
+			free(x->pc);
 	}
+	else
+		ft_no_pipe_no_cmd_redir(&redir, x);
 }
 
-void	ft_processus_nopipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
+void	ft_processus_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 {
-	t_list *tmp_cmd;
-	t_list *tmp_redir;
+	t_list	*tmp_cmd;
+	t_list	*tmp_redir;
 
 	tmp_cmd = *cmd;
 	tmp_redir = *redir;
-	ft_cmd_constructor(&tmp_cmd, x, cpenv);
-	ft_catch_file(&tmp_redir,  x, cpenv);
-	if (x->pc != NULL)
+	while (tmp_redir)
 	{
-		// dprintf(2, "EXECVE..... pc => %s\n",x->pc);
-		// dprintf(2, "EXECVE..... option[0] => %s\n", x->option[0]);
-		// dprintf(2, "EXECVE..... option[1] => %s\n", x->option[1]);
-		// dprintf(2, "EXECVE..... option[2] => %s\n", x->option[2]);
-		execve(x->pc, x->option, x->env);
+		if (ft_is_redirection_in(&tmp_redir) == 1)
+			ft_no_pipe_redirection_in(&tmp_redir, x);
+		if (ft_is_redirection_out(&tmp_redir) == 1)
+			ft_no_pipe_redirection_out(&tmp_redir, x);
+		tmp_redir = tmp_redir->next;
 	}
+	if (x->flag_stop == 2)
+		return ;
+	if (x->flag_executable != 2)
+		ft_cmd_constructor(&tmp_cmd, x, cpenv);
+	if (x->pc != NULL)
+		execve(x->pc, x->option, get_env(*cpenv));
 	free(x->pc);
 	free(x->option);
 }

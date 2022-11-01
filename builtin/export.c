@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:22:25 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/13 21:42:28 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/31 17:00:24 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_write_exp(t_list **exp)
+void	ft_write_exp(t_list **exp, t_list *cmdredir)
 {
 	t_list	*tmp;
 	t_words	*content;
@@ -30,12 +30,12 @@ void	ft_write_exp(t_list **exp)
 			before_eq = ft_strndup(content->word, index_eq);
 			after_eq = ft_substr(content->word,
 					index_eq + 1, ft_strlen(content->word));
-			printf("export %s=\"%s\"\n", before_eq, after_eq);
+			dprintf(((t_cmdredir *)cmdredir->content)->fd_cmd[1], "export %s=\"%s\"\n", before_eq, after_eq);
 			free(before_eq);
 			free(after_eq);
 		}
 		else
-			printf("export %s\n", content->word);
+			dprintf(((t_cmdredir *)cmdredir->content)->fd_cmd[1], "export %s\n", content->word);
 		tmp = tmp->next;
 	}
 }
@@ -62,7 +62,7 @@ void	env_to_exp(t_list **tmp_exp, t_words *content, t_list **exp)
 	}
 }
 
-void	ft_put_export(t_list **cpenv)
+void	ft_put_export(t_list **cpenv, t_list *cmdredir)
 {
 	t_list	*tmp;
 	t_words	*content;
@@ -82,32 +82,34 @@ void	ft_put_export(t_list **cpenv)
 		env_to_exp(&tmp_exp, content, exp);
 		tmp = tmp->next;
 	}
-	ft_write_exp(exp);
-	ft_lst_clear(exp, ft_free_words);
+	ft_write_exp(exp, cmdredir);
+	ft_lstclear(exp, ft_free_words);
 }
 
-int	ft_export(t_list *cmd, t_list **cpenv)
+int	ft_export(t_list *cmdredir, t_list **cpenv, t_data *x)
 {
+	t_list *cmd;
 	int		index_eq;
 	int		err;
-	t_words	*content;
 
+	cmd = ((t_cmdredir *)cmdredir->content)->cmd;
 	err = 0;
-	if (!cmd)
-		ft_put_export(cpenv);
+	(void)x;
+	if (!(cmd->next) || !(((t_words *)cmd->next->content)->word))
+		ft_put_export(cpenv, cmdredir);
 	else
 	{
-		content = (t_words *) cmd->content;
+		cmd = cmd->next;
 		while (cmd)
 		{
-			content = (t_words *)cmd->content;
-			index_eq = check_if_equal(content->word);
-			if ((index_eq == -42 && err++ < 42)
-				|| (check_if_first_alpha(content->word) != 0
-					&& check_if_alphanum(content->word) != 0 && (err++ < 42)))
-				ft_export_error(content->word);
+			index_eq = check_if_equal(((t_words *)cmd->content)->word);
+			if ((index_eq == -42
+					|| check_first_alpha(((t_words *)cmd->content)->word) != 0
+					|| check_alnum(((t_words *)cmd->content)->word) != 0)
+				&& err++ < 42)
+				ft_export_error(((t_words *)cmd->content)->word);
 			else
-				call_case(index_eq, content, cpenv);
+				call_case(index_eq, (t_words *)cmd->content, cpenv);
 			cmd = cmd->next;
 		}
 	}

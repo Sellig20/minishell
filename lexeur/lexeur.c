@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:41:59 by evsuits           #+#    #+#             */
-/*   Updated: 2022/09/27 14:56:45 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/27 22:02:23 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,14 @@ void	visualize_t_letters(t_list **lst_letters)
 		((t_letters *)tmp->content)->token);
 }
 
-int	pre_lexeur(char *line, t_list **lst_letters)
+int	pre_lexeur(t_data *x, char *line,  t_list **lst_letters)
 {
 	int		i;
 	int		*j;
 	t_list	*new;
 
 	i = 1;
+	(void) x;
 	j = malloc(sizeof(int));
 	*j = DEFAULT_STATE;
 	if (line == NULL)
@@ -108,5 +109,5 @@ int	pre_lexeur(char *line, t_list **lst_letters)
 	if (*j != DEFAULT_STATE)
 		return (syntax_error(*lst_letters, 8), 1);
 	free(j);
-	return (true);
+	return (0);
 }

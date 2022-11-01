@@ -42,19 +42,19 @@ void	ft_free_btw_pipes(void *content)
 	if (btw_pipes)
 	{
 		if (btw_pipes->portion_words)
-			ft_lst_clear(&(btw_pipes->portion_words), ft_free_words);
+			ft_lstclear(&(btw_pipes->portion_words), ft_free_words);
 	}
 }
 
 void	ft_free_cpenv(void *content)
 {
-	t_cpenv	*cpenv;
+	t_words	*cpenv;
 
 	cpenv = content;
 	if (cpenv)
 	{
-		if (cpenv->one_env)
-			free(cpenv->one_env);
+		if (cpenv->word)
+			free(cpenv->word);
 	}
 	free(cpenv);
 }
@@ -68,11 +68,11 @@ void	ft_free_cmd_redir(void *content)
 	{
 		if (cmdredir->cmd)
 		{
-			ft_lst_clear_cmd_dir(&(cmdredir->cmd), ft_free_words);
+			ft_lstclear_cmd_dir(&(cmdredir->cmd), ft_free_words);
 		}
 		if (cmdredir->redirection)
 		{
-			ft_lst_clear_cmd_dir(&(cmdredir->redirection), ft_free_words);
+			ft_lstclear_cmd_dir(&(cmdredir->redirection), ft_free_words);
 		}
 		free(cmdredir);
 	}

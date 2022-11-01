@@ -6,7 +6,7 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:22:45 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/13 21:40:08 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/27 00:41:17 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	check_if_equal(char *cmd)
 		return (-42);
 	while (cmd[i])
 	{
-		if (cmd[i + 1] && cmd[i] == '+' && cmd[i + 1] == '=')
+		if (cmd[i] == '+' && cmd[i + 1] && cmd[i + 1] == '=')
 			return ((i + 1) * (-1));
 		if (cmd[i] == '=')
 			return (i);
@@ -30,28 +30,28 @@ int	check_if_equal(char *cmd)
 	return (0);
 }
 
-int	check_if_first_alpha(char *cmdnext)
+int	check_first_alpha(char *cmd)
 {
-	if ((cmdnext[0] >= 'A' && cmdnext[0] <= 'Z')
-		|| (cmdnext[0] >= 'a' && cmdnext[0] <= 'z'))
+	if ((cmd[0] >= 'A' && cmd[0] <= 'Z')
+		|| (cmd[0] >= 'a' && cmd[0] <= 'z'))
 		return (0);
 	return (1);
 }
 
-int	check_if_alphanum(char *cmdnext)
+int	check_alnum(char *cmd)
 {
 	int	i;
 
 	i = 0;
-	if (cmdnext[i] == '=' || cmdnext[i] == '+')
+	if (cmd[i] == '=' || cmd[i] == '+')
 		return (1);
-	while (cmdnext[i] && cmdnext[i] != '=')
+	while (cmd[i] && cmd[i] != '=')
 	{
-		if (cmdnext[i] == '+' && cmdnext[i + 1] && cmdnext[i + 1] == '=')
+		if (cmd[i] == '+' && cmd[i + 1] && cmd[i + 1] == '=')
 			return (0);
-		else if ((cmdnext[i] < 'A' || cmdnext[i] > 'Z') && (cmdnext[i] < 'a'
-				|| cmdnext[i] > 'z') && (cmdnext[i] < '0' || cmdnext[i] > '9')
-			&& cmdnext[i] != '_')
+		else if ((cmd[i] < 'A' || cmd[i] > 'Z') && (cmd[i] < 'a'
+				|| cmd[i] > 'z') && (cmd[i] < '0' || cmd[i] > '9')
+			&& cmd[i] != '_' && (cmd[i] == '+' && cmd[i + 1] == '='))
 			return (1);
 		i++;
 	}
@@ -64,7 +64,6 @@ void	ft_insert(t_list *new, t_list *tmp)
 
 	if (new == NULL || tmp == NULL)
 		return ;
-
 	swp = tmp->next;
 	tmp->next = new;
 	new->next = swp;

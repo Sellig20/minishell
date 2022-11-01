@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 14:25:46 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/13 13:35:22 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/10/26 18:55:09 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ t_cmdredir *cmdredir_init(t_list *portion)
     remplir_redir = ft_dupredir(portion);
     list->cmd = (*remplir_cmd);
     list->redirection = (*remplir_redir);
+    list->process_id = -2;
     free(remplir_cmd);
     free(remplir_redir);
     return (list);

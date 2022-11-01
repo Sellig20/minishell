@@ -6,7 +6,7 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 15:00:34 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/10 18:42:41 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/10/27 00:21:25 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ int	token_validity(t_list **lst_words)
 	t_list	*tmp;
 
 	tmp = *lst_words;
-	while (tmp && tmp->next)
+	while (tmp)
 	{
-		if (((t_words *)tmp->content)->token == TOK_PIPE
+		if ((((t_words *)tmp->content)->token == TOK_PIPE
+				|| ((t_words *)tmp->content)->token == TOK_DOLL)
 			&& ft_strlen(((t_words *)tmp->content)->word) > 1)
 			return (syntax_error(tmp, 1), 1);
 		else if ((((t_words *)tmp->content)->token == TOK_TO
@@ -71,13 +72,13 @@ int	check_redir(t_list *tmp)
 	return (1);
 }
 
-int	check_after_redir(t_list *tmp)
+int	check_after_redir(t_list **tmp)
 {
-	if (((t_words *)(tmp->next)->content)->token == TOK_SPAC)
-		tmp = tmp->next;
-	if (((t_words *) tmp->next->content)->token != TOK_WORD
-		&& ((t_words *) tmp->next->content)->token != TOK_DOLL
-		&& ((t_words *) tmp->next->content)->token != TOK_QUOT)
+	if (((t_words *)(*tmp)->next->content)->token == TOK_SPAC)
+		*tmp = (*tmp)->next;
+	if (((t_words *)(*tmp)->next->content)->token != TOK_WORD
+		&& ((t_words *)(*tmp)->next->content)->token != TOK_DOLL
+		&& ((t_words *)(*tmp)->next->content)->token != TOK_QUOT)
 		return (0);
 	return (1);
 }
@@ -87,13 +88,13 @@ int	token_order(t_list **lst_words)
 	t_list	*tmp;
 
 	tmp = *lst_words;
+	if (tmp && ((t_words *) tmp->content)->token == TOK_SPAC)
+		tmp = tmp->next;
 	if (tmp && ((t_words *) tmp->content)->token == TOK_PIPE)
 		return (syntax_error(tmp, 3), 1);
 	while (tmp && tmp->next)
 	{
-		if (check_redir(tmp) == 0 && check_after_redir(tmp->next) == 0)
-			return (syntax_error(tmp->next, 4), 1);
-		else if (check_redir(tmp) == 0 && check_after_redir(tmp) == 0)
+		if (check_redir(tmp) == 0 && check_after_redir(&tmp) == 0)
 			return (syntax_error(tmp, 4), 1);
 		else if (((t_words *)tmp->content)->token == TOK_PIPE
 			&& ((t_words *)(tmp->next)->content)->token == TOK_PIPE)

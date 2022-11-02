@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 13:54:44 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/31 21:23:42 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/02 18:42:18 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,28 @@ extern int	g_status;
 
 int	ft_exist_error(char *infile, t_data *x)
 {
-	ft_putstr_fd("minimichel: ", 2);
-	write(2, infile, ft_strlen(infile));
-	ft_putstr_fd(" : No such file or directory", 2);
-	write(2, "\n", 1);
-	//no pipe no cmd ou no pipe builtin
+	// ft_putstr_fd("minimichel: ", 2);
+	// write(2, infile, ft_strlen(infile));
+	// ft_putstr_fd(" : No such file or directory", 2);
+	// write(2, "\n", 1);
+	// //no pipe no cmd ou no pipe builtin
+	// if (x->flag_no_pipe_no_cmd_ok_redir == 0)
+	// 	ft_exit_bis("1", x);
+	// // else
+	// // 	g_status = 1;
+
+	char	*tmp;
+	char	*tmp1;
+	char	*to_return;
+
+	tmp = ft_strjoin(infile, ": No such file or directory");
+	tmp1 = ft_strjoin("MMMMMMMinimichel: ", tmp);
+	to_return = ft_strjoin(tmp1, "\n");
+	write(2, to_return, ft_strlen(to_return));
+	free(to_return);
+	free(tmp);
 	if (x->flag_no_pipe_no_cmd_ok_redir == 0)
 		ft_exit_bis("1", x);
-	// else
-	// 	g_status = 1;
 	return (false);
 }
 

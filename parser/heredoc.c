@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 13:34:50 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/01 18:31:05 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/02 15:21:15 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ int	ft_read_infile_heredoc(t_list **list, char *lim, char *line, t_list **cpenv,
 	while (1)
 	{
 		line = readline(">");
+		if (!(line))
+			return (close(fd), fd);
 		if (ft_strncmp(lim, line, ft_strlen(lim)) == 0)
 			break;
 		pre_lexeur(x, line, &letter);

@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:35:03 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/01 19:14:12 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/02 19:42:19 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ typedef struct s_data{
 	int		flag_stop;
 	int		flag_no_pipe_no_cmd_ok_redir;
 	int		nb_cmd;
+	int		i_ex;
 	////////////////////////
 	t_list	*letters;
 	t_list	*words;
@@ -214,13 +215,7 @@ int			ft_check_after_doll(char *word);
 //////////EXPAND//////////
 char		*ft_result(t_list **envcp, int res, char *word, t_data *x);
 
-//////////LINKED LISTS//////////
-void		ft_lstadd_back(t_list **alst, t_list *new);
-void		**ft_lstadd_back2(t_list **alst, t_list *new);
-t_list		*ft_lstnew(void * content);
-t_btw_pipes	*ft_add_back(t_btw_pipes *a_list, t_words **words);
-void    	ft_lstdelone(t_list *lst, void (*del)(void *));
-int			ft_lstsize(t_list **tmp);
+
 
 //////////PARSER//////////
 void		sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes);
@@ -253,52 +248,6 @@ int			ft_is_space(char *cmd);
 void		ft_error_command_not_found(char *cmd);
 char		*ft_join_options(t_list **cmd, t_data *x);
 
-//////////ENVIRONNEMENT//////////
-void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
-t_cmdredir 	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
-t_list		**ft_expand(t_list **words, t_list **envcp, t_data *x);
-void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
-int			ft_check_after_doll(char *word);
-void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
-t_words 	*ft_init_words(char *word, int token);
-t_words 	*ft_init_words_kezako(char *word);
-
-//////////EXECUTION//////////
-//execution_no_pipe.c
-void	ft_execution_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv);
-
-
-void		ft_organize_execution(t_data *x, t_list **after_doll, t_list **cpenv);
-void		ft_execution_no_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
-void		ft_processus_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
-void		ft_execution_organisation(t_list **after_doll, t_list **cpenv, t_data *x);
-void		ft_execution_pipe(t_list **after_doll, t_list **cpenv, t_data *x, int nb_cmd);
-void		ft_processus_pipe(t_list **tmpafterd, t_data *x, t_list **cpenv);
-// void		ft_catch_file_tekflemme(t_list **after_doll, t_data *x);
-void		ft_catch_file_tekinfile(t_list **after_doll, t_list *redir, t_data *x);
-void		ft_catch_file_tekoutfile(t_list **after_doll, t_list *redir, t_data *x);
-int			ft_is_builtin(t_list **tmp, t_data *x, t_list**cpenv);
-
-
-//execution_utils.c
-int			ft_nb_cmd(t_list **lst);
-void		ft_set_fdcmd(t_list **after_doll, t_data *x);
-
-//redirection_no_pipe.c
-void		ft_no_pipe_redirection_in(t_list **redir, t_data *x);
-void		ft_no_pipe_redirection_out(t_list **redir, t_data *x);
-void		ft_annexe_in_out(t_list **list, t_data *x);
-int			ft_is_redirection_in(t_list **list);
-int			ft_is_redirection_out(t_list **list);
-
-//redirection_pipe.c
-void		ft_pipe_redirection_out(t_list **after_doll, t_list *redir, t_data *x);
-void		ft_pipe_redirection_in(t_list **after_doll, t_list *redir, t_data *x, t_list **cpenv);
-
-
-int			ft_waitpid(t_list **after_doll, t_data *x);
-char		**get_env(t_list *cpenv);
-
 //////////CHECK FILES AN REDIRECTION//////////
 void		ft_catch_file(t_list **after_doll, t_data *x, t_list **envcp);
 void		ft_heredoc(t_list **tmp, t_data *x, t_list **cpenv);
@@ -314,6 +263,60 @@ void		ft_close(int fd);
 int			ft_is_exe(t_list **tmp, t_data *x, t_list **cpenv);
 char		*ft_is_executable(t_list **tmp, t_data *x, t_list **cpenv);
 char		*ft_transform_executable(char *executable);
+
+//////////ENVIRONNEMENT//////////
+void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
+t_cmdredir 	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
+t_list		**ft_expand(t_list **words, t_list **envcp, t_data *x);
+void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
+int			ft_check_after_doll(char *word);
+void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
+t_words 	*ft_init_words(char *word, int token);
+t_words 	*ft_init_words_kezako(char *word);
+char		**get_env(t_list *cpenv);
+
+//////////EXECUTION//////////
+void		ft_execution_organisation(t_list **after_doll, t_list **cpenv, t_data *x);
+int			ft_nb_cmd(t_list **lst);
+void		ft_set_fdcmd(t_list **after_doll, t_data *x);
+
+//execution_no_pipe.c
+void		ft_execution_no_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_execution_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv);
+void		ft_processus_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
+void		ft_no_pipe_no_cmd_redir(t_list **redir, t_data *x);
+void		ft_no_pipe_is_executable(t_list **cmdredir, t_list **cpenv, t_data *x);
+
+//execution_pipe.c
+void		ft_execution_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_processus_pipe(t_list **tmpafterd, t_data *x, t_list **cpenv);
+void		ft_create_pipe(t_list **cmdredir, t_data *x);
+
+//execution_pipe_utils.c
+int			ft_waitpid(t_list **after_doll);
+void		ft_connector_redirections(t_list **cmdredir, t_data *x);
+void		ft_connector_std_fdcmd(t_list **cmdredir);
+int			ft_is_redirection_in(t_list **list);
+int			ft_is_redirection_out(t_list **list);
+
+//redirection_no_pipe.c
+void		ft_no_pipe_redirection_in(t_list **redir, t_data *x);
+void		ft_no_pipe_redirection_out(t_list **redir, t_data *x);
+void		ft_annexe_in_out_no_pipe(t_list **list, t_data *x);
+
+//redirection_pipe.c
+void		ft_pipe_redirection_out(t_list **after_doll, t_list *redir, t_data *x);
+void		ft_pipe_redirection_in(t_list **after_doll, t_list *redir, t_data *x);
+void		ft_annexe_in_out_pipe(t_list **cmdredir, t_list **list, t_data *x);
+
+
+//////////LINKED LISTS//////////
+void		ft_lstadd_back(t_list **alst, t_list *new);
+void		**ft_lstadd_back2(t_list **alst, t_list *new);
+t_list		*ft_lstnew(void * content);
+t_btw_pipes	*ft_add_back(t_btw_pipes *a_list, t_words **words);
+void		ft_lstdelone(t_list *lst, void (*del)(void *));
+int			ft_lstsize(t_list **tmp);
 
 //////////LIBFT//////////XXXXXXXXXXXXXXXXXXXXXXXXXXX
 char		**ft_split(char const *s, char c);
@@ -346,6 +349,9 @@ void		ft_visualize_btw_pipes(t_list **lst_btw_pipes);
 void		ft_visualize_cmd_redir(t_list **list);
 void		visualize_string_tab(char **str);
 void		visualize_t_words(t_list **lst_words);
+
+//////////BUILTIN//////////
+int			ft_is_builtin(t_list **tmp, t_data *x, t_list**cpenv);
 
 //export.c
 void		ft_export_solo(t_list **cpenv);

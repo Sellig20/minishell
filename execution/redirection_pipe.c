@@ -6,18 +6,45 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 14:02:06 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/01 14:47:47 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/02 17:06:54 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_pipe_redirection_in(t_list **after_doll, t_list *redir, t_data *x, t_list **cpenv)
+extern int	g_status;
+
+void	ft_annexe_in_out_pipe(t_list **cmdredir, t_list **redir, t_data *x)
+{
+	t_list	*tmp;
+	t_list	*tmp_redir;
+
+	tmp = *cmdredir;
+	tmp_redir = *redir;
+	if (x->redir_key == 1)
+	{
+		x->infile = ft_read_infile(((t_words *)tmp_redir->next->content)->word, x);
+		if (x->infile < 0)
+			ft_exist_error(((t_words *)tmp_redir->next->content)->word, x);
+		if (x->infile)
+			((t_cmdredir *) tmp->content)->fd_cmd[0] = x->infile;
+	}
+	if (x->redir_key == 2)
+	{
+		x->outfile = ft_read_outfile(((t_words *)tmp_redir->next->content)->word, x);
+		if (x->outfile < 0)
+			ft_perm_error(((t_words *)tmp_redir->next->content)->word, x);
+		if (x->outfile)
+			((t_cmdredir *) tmp->content)->fd_cmd[1] = x->outfile;
+	}
+}
+
+void	ft_pipe_redirection_in(t_list **cmdredir, t_list *redir, t_data *x)
 {
 	t_list *tmp;
 
-	(void) cpenv;
-	tmp = *after_doll;
+	tmp = *cmdredir;
+	x->redir_key = 1;
 	if (((t_words *)tmp->content) == NULL)
 		return ;
 	if (((t_words *)redir->content)->token == TOK_FRFR)
@@ -27,13 +54,7 @@ void	ft_pipe_redirection_in(t_list **after_doll, t_list *redir, t_data *x, t_lis
 		((t_cmdredir *) tmp->content)->fd_cmd[0] = x->here_infile;
 	}
 	else if (((t_words *)redir->content)->token == TOK_FROM)
-	{
-		x->infile = ft_read_infile(((t_words *)redir->next->content)->word, x);
-		if (x->infile < 0)
-			ft_exist_error(((t_words *)redir->next->content)->word, x);
-		if (x->infile)
-			((t_cmdredir *) tmp->content)->fd_cmd[0] = x->infile;
-	}
+		ft_annexe_in_out_pipe(&tmp, &redir, x);
 	else
 		((t_cmdredir *) tmp->content)->fd_cmd[0] = STDIN_FILENO;
 }
@@ -43,6 +64,7 @@ void	ft_pipe_redirection_out(t_list **after_doll, t_list *redir, t_data *x)
 	t_list *tmp;
 
 	tmp = *after_doll;
+	x->redir_key = 2;
 	if (((t_words *)tmp->content) == NULL)
 		return ;
 	if ( ((t_words *)redir->content)->token == TOK_TOTO)
@@ -53,13 +75,7 @@ void	ft_pipe_redirection_out(t_list **after_doll, t_list *redir, t_data *x)
 		((t_cmdredir *) tmp->content)->fd_cmd[1] = x->append_outfile;
 	}
 	else if (((t_words *)redir->content)->token == TOK_TO)
-	{
-		x->outfile = ft_read_outfile(((t_words *)redir->next->content)->word, x);
-		if (x->outfile < 0)
-			ft_perm_error(((t_words *)redir->next->content)->word, x);
-		if (x->outfile)
-			((t_cmdredir *) tmp->content)->fd_cmd[1] = x->outfile;
-	}
+		ft_annexe_in_out_pipe(&tmp, &redir, x);
 	else
 		((t_cmdredir *) tmp->content)->fd_cmd[1] = STDOUT_FILENO;
 }

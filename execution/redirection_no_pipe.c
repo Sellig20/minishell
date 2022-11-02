@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 14:39:40 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/01 14:45:18 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/02 16:58:55 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_redirection_out(int outfile)
 	close(outfile);
 }
 
-void	ft_annexe_in_out(t_list **list, t_data *x)
+void	ft_annexe_in_out_no_pipe(t_list **list, t_data *x)
 {
 	t_list	*tmp;
 
@@ -63,7 +63,7 @@ void	ft_no_pipe_redirection_in(t_list **redir, t_data *x)
 	while (tmp)
 	{
 		if (((t_words *)tmp->content)->token == TOK_FROM)
-			ft_annexe_in_out(&tmp, x);
+			ft_annexe_in_out_no_pipe(&tmp, x);
 		tmp = tmp->next;
 	}
 }
@@ -87,7 +87,7 @@ void	ft_no_pipe_redirection_out(t_list **redir, t_data *x)
 				ft_redirection_out(x->outfile);
 		}
 		else if ( ((t_words *)tmp->content)->token == TOK_TO)
-			ft_annexe_in_out(&tmp, x);
+			ft_annexe_in_out_no_pipe(&tmp, x);
 		tmp = tmp->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 13:19:26 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/01 14:44:38 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/02 19:02:43 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ char	**ft_get_path_in_env(t_data *x, t_list **cpenv)
 	i = 0;
 	if (!cpenv)
 	{
-
 		return (NULL);
 	}
 	while (tmp_cpenv)

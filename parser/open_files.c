@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 13:53:21 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/31 21:08:10 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 12:34:22 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 int	ft_read_infile(char *infile, t_data *x)
 {
-	int file;
+	int	file;
+
 	(void)x;
 	file = open(infile, O_RDONLY);
 	if (file < 0)
-		ft_exist_error(infile, x);
+		ft_error_nsfod(infile, x);
 	return (file);
 }
 

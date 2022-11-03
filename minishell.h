@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:35:03 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/02 19:42:19 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 22:21:09 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,12 @@ typedef struct s_data{
 	int		flag_no_pipe_no_cmd_ok_redir;
 	int		nb_cmd;
 	int		i_ex;
+	int		finish;
+	int		res_echo;
+	int		only_n;
+	int		bad_friend;
+	int		has_writ;
+	int		echo_opt;
 	////////////////////////
 	t_list	*letters;
 	t_list	*words;
@@ -148,13 +154,6 @@ typedef struct s_data{
 
 }	t_data;
 
-typedef struct s_echo{
-	char	*str;
-	int		n_option;
-	int		i;
-	int		shot;
-	int		has_written;
-}	t_echo;
 
 enum	e_quote_state
 {
@@ -173,7 +172,7 @@ enum	e_quote
 int			sizeof_string_tab(char **str);
 void		handle_sig_child(int sig);
 void		handle_sig_parent(int sig);
-
+////////////////////////////////////////////LEXER/////////////////////////////////////////////
 //lexeur.c
 int			pre_lexeur(t_data *x, char *line, t_list **letters);
 
@@ -205,32 +204,35 @@ int			check_del(t_list *tmp);
 void		ft_delete_space(t_list **lst_words);
 void		ft_lim_protection(t_list **lst_words);
 
-//////////DOLLAR//////////
-void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
-t_cmdredir	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
-t_list		**ft_expand_cmd(t_list **segment, t_list **envcp, t_data *x);
-t_list		**ft_expand_redir(t_list **segment, t_list **envcp, t_data *x);
-int			ft_check_after_doll(char *word);
-
-//////////EXPAND//////////
+/////////////////////////////////////////PARSER////////////////////////////////////////////////////////
+//expand.c
 char		*ft_result(t_list **envcp, int res, char *word, t_data *x);
+char	*ft_methode_1(char *new_word, char *word, t_dollar *d, t_data *x);
+char	*ft_methode_2(char *new_word, char *word, t_dollar *d);
+char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x);
+char	*ft_methode_4(char *new_word, char *word, t_dollar *d);
 
+//expand_annexe.c
+int	ft_check_after_doll(char *word);
+char	*ft_expand_found_3(t_dollar *d, char *new_word, int len);
+char	*ft_expand_not_found_4(t_dollar *d, char *new_word);
+char	*ft_expand_found_4(t_dollar *d, char *new_word);
+char	*ft_expand_4(char *new_word, t_dollar *d);
 
+//sep_cmd.c
+int	ft_check_not_cmd(t_list *portion);
+int	ft_check_dollar_followed(t_list *portion);
+int	ft_check_dollar(t_list *portion);
+int	ft_check_cmd_followed(t_list *portion);
+int	ft_sort_cmd(t_list *portion);
 
-//////////PARSER//////////
-void		sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes);
-t_list		*ft_sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes);
-int			ft_nb_pipes(t_list **lst_words);
-t_words		*ft_add_redir(t_words *a_list, t_words *value);
-void		ft_sep_cmd_redir(t_list **btw_pipes, t_list **future);
-t_cmdredir	*cmdredir_init(t_list *portion);
-t_list		**ft_dupredir(t_list *portion);
+//parser_cmd_redir.c
 t_list		**ft_dupcmd(t_list *portion);
-int			ft_error_ambigous_redirect(char *word, int len);
-int			ft_error_nsfod(char *infile);
-void		ft_check_ambi(t_list **tmp, t_data *x);
+t_list		**ft_dupredir(t_list *portion);
+t_cmdredir	*cmdredir_init(t_list *portion);
+void		ft_sep_cmd_redir(t_list **btw_pipes, t_list **future);
+t_list	*ft_return_duped(t_list *portion, t_list *dup);
 
-//////////COMMAND & PATH ABSOLUTE//////////
 //cmd_constructor.c
 int			ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv);
 int			ft_cmd_and_env(t_data *x, t_list **cmd, t_list **cpenv);
@@ -242,20 +244,30 @@ char		*ft_path_construction(t_list **cmd, t_data *x, t_list **cpenv);//ft_path_c
 char		*ft_construction_absolute_path_pc(char **path_env, char **option);
 char		**ft_get_path_in_env(t_data *x, t_list **cpenv);
 
-
+void		sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes);
+t_list		*ft_sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes);
+int			ft_nb_pipes(t_list **lst_words);
+t_words		*ft_add_redir(t_words *a_list, t_words *value);
+void		ft_check_ambi(t_list **tmp, t_data *x);
 int			ft_is_null(char *cmd);
 int			ft_is_space(char *cmd);
-void		ft_error_command_not_found(char *cmd);
 char		*ft_join_options(t_list **cmd, t_data *x);
+
+////////////////////////////////////ERROR FUNCTIONS////////////////////////////////////////////////////
+//open_error_files.c
+int			ft_exist_error_directory(char *infile, t_data *x);
+int			ft_error_nsfod(char *infile, t_data *x);
+int			ft_perm_error(char *file, t_data *x);
+
+//error_functions.c
+int			ft_error_ambigous_redirect(char *word, int len);
+void		ft_error_command_not_found(char *cmd);
 
 //////////CHECK FILES AN REDIRECTION//////////
 void		ft_catch_file(t_list **after_doll, t_data *x, t_list **envcp);
 void		ft_heredoc(t_list **tmp, t_data *x, t_list **cpenv);
 int			ft_read_infile_heredoc(t_list **tmp, char *lim, char *line, t_list **cpenv, t_data *x);
 char		*ft_expand_heredoc(char *line, t_list **cpenv, int res, t_data *x);
-int			ft_exist_error(char *infile, t_data *x);
-int			ft_exist_error_directory(char *infile, t_data *x);
-int			ft_perm_error(char *file, t_data *x);
 int			ft_read_infile(char *infile, t_data *x);
 int			ft_read_outfile_append(char *outfile, t_data *x);
 int			ft_read_outfile(char *outfile, t_data *x);
@@ -264,7 +276,7 @@ int			ft_is_exe(t_list **tmp, t_data *x, t_list **cpenv);
 char		*ft_is_executable(t_list **tmp, t_data *x, t_list **cpenv);
 char		*ft_transform_executable(char *executable);
 
-//////////ENVIRONNEMENT//////////
+////////////////////////////////////ENVIRONNEMENT///////////////////////////////////////////////////
 void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *x);
 t_cmdredir 	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
 t_list		**ft_expand(t_list **words, t_list **envcp, t_data *x);
@@ -275,21 +287,21 @@ t_words 	*ft_init_words(char *word, int token);
 t_words 	*ft_init_words_kezako(char *word);
 char		**get_env(t_list *cpenv);
 
-//////////EXECUTION//////////
-void		ft_execution_organisation(t_list **after_doll, t_list **cpenv, t_data *x);
+///////////////////////////////////////EXECUTION////////////////////////////////////////////////////
+void		ft_exec_organisation(t_list **after_doll, t_list **cpenv, t_data *x);
 int			ft_nb_cmd(t_list **lst);
 void		ft_set_fdcmd(t_list **after_doll, t_data *x);
 
 //execution_no_pipe.c
-void		ft_execution_no_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
-void		ft_execution_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv);
-void		ft_processus_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
+void		ft_exec_no_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_exec_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv);
+void		ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
 void		ft_no_pipe_no_cmd_redir(t_list **redir, t_data *x);
 void		ft_no_pipe_is_executable(t_list **cmdredir, t_list **cpenv, t_data *x);
 
 //execution_pipe.c
-void		ft_execution_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
-void		ft_processus_pipe(t_list **tmpafterd, t_data *x, t_list **cpenv);
+void		ft_exec_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_proc_pipe(t_list **tmpafterd, t_data *x, t_list **cpenv);
 void		ft_create_pipe(t_list **cmdredir, t_data *x);
 
 //execution_pipe_utils.c
@@ -309,8 +321,7 @@ void		ft_pipe_redirection_out(t_list **after_doll, t_list *redir, t_data *x);
 void		ft_pipe_redirection_in(t_list **after_doll, t_list *redir, t_data *x);
 void		ft_annexe_in_out_pipe(t_list **cmdredir, t_list **list, t_data *x);
 
-
-//////////LINKED LISTS//////////
+/////////////////////////////////////LINKED LISTS//////////////////////////////////////////////////
 void		ft_lstadd_back(t_list **alst, t_list *new);
 void		**ft_lstadd_back2(t_list **alst, t_list *new);
 t_list		*ft_lstnew(void * content);
@@ -318,7 +329,7 @@ t_btw_pipes	*ft_add_back(t_btw_pipes *a_list, t_words **words);
 void		ft_lstdelone(t_list *lst, void (*del)(void *));
 int			ft_lstsize(t_list **tmp);
 
-//////////LIBFT//////////XXXXXXXXXXXXXXXXXXXXXXXXXXX
+///////////////////////////////////////////LIBFT///////////////////////////////////////////////////
 char		**ft_split(char const *s, char c);
 char		*ft_strjoin(char const *s1, char const *s2);
 size_t		ft_strlen(const char *s);
@@ -378,24 +389,37 @@ int			ft_unset(t_list *cmd, t_list **cpenv, t_data *x);
 //exit_utils.c
 long long	ft_atoll(char *str);
 
+//echo.c
+int			ft_echo(t_list *cmdredir, t_list **cpenv, t_data *x);
+int			ft_orga_n(t_list *cmdredir, char *str, t_data *x);
+int			ft_strn(char *str, t_data *x);
+
+//echo_utils.c
+int			ft_strlenlen(char *str);
+int			ft_echo_n_option_no(t_list *cmdredir, char *str, t_data *x);
+int			ft_echo_n_option_yes_only(t_list *cmdredir, char *str, t_data *x);
+int			ft_echo_n_option_yes_not_only(t_list *cmdredir, char *str, t_data *x);
+void		ft_print_echo(char *str, t_list *cmdredir, t_data *x);
+
+
 typedef struct s_builtin_value	t_builtin_value;
 typedef int						(*t_fct)(t_list *cmd, t_list **cpenv, t_data *x);
 
 struct s_builtin_value
 {
-	char const			*builtin_name;
+	char const			*b;
 	t_fct const			fonction;
 };
 
 void	ft_exit_bis(char *str, t_data *x);
 
-int			ft_exit(t_list *cmd, t_list **cpenv, t_data *x);
-int			ft_export(t_list *cmdnext, t_list **cpenv, t_data *x);
-int			ft_pwd(t_list *cmd, t_list **cpenv, t_data *x);
-int			ft_echo(t_list *cmd, t_list **cpenv, t_data *x);
-int			ft_cd(t_list *cmd, t_list **cpenv, t_data *x);
-int			ft_fonction(t_list *cmd, t_list **cpenv, t_data *x);
-int			ft_env(t_list *cmd, t_list **cpenv, t_data *x);
+int			ft_exit(t_list *cmdredir, t_list **cpenv, t_data *x);
+int			ft_export(t_list *cmdredirnext, t_list **cpenv, t_data *x);
+int			ft_pwd(t_list *cmdredir, t_list **cpenv, t_data *x);
+int			ft_echo(t_list *cmdredir, t_list **cpenv, t_data *x);
+int			ft_cd(t_list *cmdredir, t_list **cpenv, t_data *x);
+int			ft_fonction(t_list *cmdredir, t_list **cpenv, t_data *x);
+int			ft_env(t_list *cmdredir, t_list **cpenv, t_data *x);
 
 static t_builtin_value	const g_lookup[] = {
 	{"cd", ft_cd},

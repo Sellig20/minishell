@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:41:45 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/02 17:07:27 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 16:06:35 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	ft_connector_redirections(t_list **cmdredir, t_data *x)
 
 void	ft_connector_std_fdcmd(t_list **cmdredir)
 {
-	t_list *tmp;
+	t_list	*tmp;
 
 	tmp = *cmdredir;
 	if (((t_cmdredir *)tmp->content)->fd_cmd[0] != STDIN_FILENO)
@@ -83,7 +83,7 @@ int	ft_waitpid(t_list **cmdredir)
 	t_list	*tmp;
 
 	tmp = *cmdredir;
-	while(tmp)
+	while (tmp)
 	{
 		waitpid(((t_cmdredir *)tmp->content)->process_id, &g_status, 0);
 		if (WIFEXITED(g_status))

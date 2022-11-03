@@ -5,126 +5,117 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/07 14:25:46 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/10/26 18:55:09 by jecolmou         ###   ########.fr       */
+/*   Created: 2022/11/03 12:38:17 by jecolmou          #+#    #+#             */
+/*   Updated: 2022/11/03 15:57:17 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_list **ft_dupcmd(t_list *portion)
+t_list	*ft_return_duped(t_list *portion, t_list *dup)
 {
-    t_list **dup;
-    t_list *new;
+	t_list	**tmp_dup;
+	t_list	*new;
 
-    dup = malloc(sizeof(t_list*));
-    if (!dup)
-        return (NULL);
-    *dup = NULL;
-    if (!portion)
-        return (NULL);
-    while (portion)
-    {
-        //dprintf(2, "~~~~~~ : %s\n", ((t_words *)portion->content)->word);
-        // if (((t_words *)portion->content)->token == TOK_FRFR || ((t_words *)portion->content)->token == TOK_FROM || ((t_words *)portion->content)->token == TOK_TO || ((t_words *)portion->content)->token == TOK_TOTO)
-        //     portion = portion->next;
-        if ((((((t_words *)portion->content)->token != TOK_DOLL)) && (((t_words *)portion->content)->token != TOK_WORD)) && (!(portion->next->next)))
-            break; //C'est que y'as plus rien derriere a continuer d'organiser
-        if ( ((t_words *)portion->content)->token != TOK_WORD && ((t_words *)portion->next->content)->token == TOK_DOLL && ((t_words *)portion->next->next->content)->token == TOK_WORD && portion->next->next->next)
-            portion = portion->next->next->next;
-        if ( ((t_words *)portion->content)->token != TOK_WORD && ((t_words *)portion->next->content)->token == TOK_DOLL && ((t_words *)portion->next->next->content)->token == TOK_WORD)
-            break;
-        if ((((((t_words *)portion->content)->token != TOK_DOLL)) && ((t_words *)portion->content)->token != TOK_WORD) && portion->next->next)
-            portion = portion->next->next;
-        else
-        {
-            new = ft_lstnew((void *) words_init(((t_words *)portion->content)->word, ((t_words *)portion->content)->token));
-            dup = (t_list **)ft_lstadd_back2(dup, new);
-            portion = portion->next;
-        }
-        //portion = portion->next;
-    }
-    if (!(*dup))
-        (*dup) = ft_lstnew(NULL);
-    return (dup);
+	tmp_dup = &dup;
+	new = ft_lstnew((void *)words_init(((t_words *)portion->content)->word,
+				((t_words *)portion->content)->token));
+	tmp_dup = (t_list **)ft_lstadd_back2(tmp_dup, new);
+	return (*tmp_dup);
 }
 
-t_list **ft_dupredir(t_list *portion)
+t_list	**ft_dupcmd(t_list *portion)
 {
-    t_list **dup;
-    t_list *new;
-    char *doll = NULL;
-    int     tok_doll;
+	t_list	**dup;
 
-    tok_doll = 0;
-    dup = malloc(sizeof(t_list*));
-    if (!dup)
-        return (NULL);
-    *dup = NULL;
-    if (!portion)
-        return (NULL);
-    while (portion)
-    {
-        if (!(portion->next))
-            break;
-        if (((t_words *)portion->content)->token != TOK_WORD && ((t_words *)portion->next->content)->token == TOK_DOLL)
-        {
-            doll = ((t_words *)portion->next->next->content)->word;
-            tok_doll = ((t_words *)portion->next->next->content)->token;
-        }
-        if (((t_words *)portion->content)->token != TOK_WORD && ((t_words *)portion->content)->token != TOK_DOLL)
-        {
-            new = ft_lstnew((void *) words_init(((t_words *)portion->content)->word, ((t_words *)portion->content)->token));
-            dup = (t_list **)ft_lstadd_back2(dup, new);
-            portion = portion->next;
-            new = ft_lstnew((void *) words_init(((t_words *)portion->content)->word, ((t_words *)portion->content)->token));
-            dup = (t_list **)ft_lstadd_back2(dup, new);
-            if (doll != NULL)
-            {
-                new = ft_lstnew((void *) words_init(doll, tok_doll));
-                dup = (t_list **)ft_lstadd_back2(dup, new);
-            }
-        }
-        portion = portion->next;
-    }
-    if (!(*dup))
-        (*dup) = ft_lstnew(NULL);
-    return (dup);
+	dup = malloc(sizeof(t_list *));
+	if (!dup)
+		return (NULL);
+	*dup = NULL;
+	if (!portion)
+		return (NULL);
+	while (portion)
+	{
+		if (ft_sort_cmd(portion) == 1)
+			break ;
+		if (ft_check_cmd_followed(portion) == 1)
+			portion = portion->next->next;
+		if (ft_check_dollar_followed(portion) == 1)
+			portion = portion->next->next->next;
+		else
+			*dup = ft_return_duped(portion, *dup);
+		portion = portion->next;
+	}
+	if (!(*dup))
+		(*dup) = ft_lstnew(NULL);
+	return (dup);
 }
 
-t_cmdredir *cmdredir_init(t_list *portion)
+t_list	**ft_dupredir(t_list *portion)
 {
-    t_cmdredir  *list;
-    t_list  **remplir_cmd = NULL;
-    t_list  **remplir_redir = NULL;
+	t_list	**dup;
 
-    if (!portion)
-        return (NULL);
-    list = malloc(sizeof(t_cmdredir));
-    if (!list)
-        return (NULL);
-    remplir_cmd = ft_dupcmd(portion);
-    remplir_redir = ft_dupredir(portion);
-    list->cmd = (*remplir_cmd);
-    list->redirection = (*remplir_redir);
-    list->process_id = -2;
-    free(remplir_cmd);
-    free(remplir_redir);
-    return (list);
+	dup = malloc(sizeof(t_list *));
+	if (!dup)
+		return (NULL);
+	*dup = NULL;
+	if (!portion)
+		return (NULL);
+	while (portion)
+	{
+		if (!(portion->next))
+			break ;
+		if (((t_words *)portion->content)->token != TOK_WORD
+			&& ((t_words *)portion->content)->token != TOK_DOLL)
+		{
+			*dup = ft_return_duped(portion, *dup);
+			portion = portion->next;
+			*dup = ft_return_duped(portion, *dup);
+		}
+		portion = portion->next;
+	}
+	if (!(*dup))
+		(*dup) = ft_lstnew(NULL);
+	return (dup);
 }
 
-void ft_sep_cmd_redir(t_list **btw_pipes, t_list **future)
+t_cmdredir	*cmdredir_init(t_list *btw_pipes)
 {
-    t_list *btw;
-    t_list *new;
+	t_cmdredir	*cmdredir;
+	t_list		**remplir_cmd;
+	t_list		**remplir_redir;
 
-    *future = NULL;
-    btw = *btw_pipes;
-    new = NULL;
-    while (btw)
-    {
-        new = ft_lstnew((void *) cmdredir_init((t_list *)((t_btw_pipes *)btw->content)->portion_words));
-        future = (t_list **)ft_lstadd_back2(future, new);
-        btw = btw->next;
-    }
+	remplir_cmd = NULL;
+	remplir_redir = NULL;
+	if (!btw_pipes)
+		return (NULL);
+	cmdredir = malloc(sizeof(t_cmdredir));
+	if (!cmdredir)
+		return (NULL);
+	remplir_cmd = ft_dupcmd(btw_pipes);
+	remplir_redir = ft_dupredir(btw_pipes);
+	cmdredir->cmd = (*remplir_cmd);
+	cmdredir->redirection = (*remplir_redir);
+	cmdredir->process_id = -2;
+	free(remplir_cmd);
+	free(remplir_redir);
+	return (cmdredir);
+}
+
+void	ft_sep_cmd_redir(t_list **btw_pipes, t_list **cmdredir)
+{
+	t_list	*btw;
+	t_list	*new;
+
+	*cmdredir = NULL;
+	btw = *btw_pipes;
+	new = NULL;
+	while (btw)
+	{
+		new = ft_lstnew((void *)
+				cmdredir_init((t_list *)((t_btw_pipes *)btw->content)
+					->portion_words));
+		cmdredir = (t_list **)ft_lstadd_back2(cmdredir, new);
+		btw = btw->next;
+	}
 }

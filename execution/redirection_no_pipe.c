@@ -6,13 +6,13 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 14:39:40 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/02 16:58:55 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 17:55:58 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern int g_status;
+extern int	g_status;
 
 void	ft_redirection_in(int infile)
 {
@@ -44,7 +44,8 @@ void	ft_annexe_in_out_no_pipe(t_list **list, t_data *x)
 		x->outfile = ft_read_outfile(((t_words *)tmp->next->content)->word, x);
 		if (x->flag_redir == 1)
 		{
-			g_status = 256;
+			//dprintf(2, "boubou\n");
+			//g_status = 256;
 			return ;
 		}
 		else
@@ -78,15 +79,16 @@ void	ft_no_pipe_redirection_out(t_list **redir, t_data *x)
 		return ;
 	while (tmp)
 	{
-		if ( ((t_words *)tmp->content)->token == TOK_TOTO)
+		if (((t_words *)tmp->content)->token == TOK_TOTO)
 		{
-			x->outfile = ft_read_outfile_append(((t_words *)tmp->next->content)->word, x);
+			x->outfile = ft_read_outfile_append(((t_words *)
+						tmp->next->content)->word, x);
 			if (x->flag_redir == 1)
 				return ;
 			else
 				ft_redirection_out(x->outfile);
 		}
-		else if ( ((t_words *)tmp->content)->token == TOK_TO)
+		else if (((t_words *)tmp->content)->token == TOK_TO)
 			ft_annexe_in_out_no_pipe(&tmp, x);
 		tmp = tmp->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 17:56:57 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/02 19:52:13 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 17:39:19 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 extern int	g_status;
 
-void	ft_execution_no_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
+void	ft_exec_no_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
 {
 	t_list	*tmp;
 	t_list	*cmd;
@@ -32,7 +32,7 @@ void	ft_execution_no_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
 			return ;
 		if (ft_is_exe(&cmd, x, cpenv) == 0)
 			ft_no_pipe_is_executable(&tmp, cpenv, x);
-		ft_execution_no_pipe_annexe(&tmp, x, cpenv);
+		ft_exec_no_pipe_annexe(&tmp, x, cpenv);
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, handle_sig_parent);
 		if (x->flag_executable == 2)
@@ -42,7 +42,7 @@ void	ft_execution_no_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
 		ft_no_pipe_no_cmd_redir(&redir, x);
 }
 
-void	ft_execution_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv)
+void	ft_exec_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv)
 {
 	t_list	*tmp;
 	t_list	*cmd;
@@ -57,7 +57,7 @@ void	ft_execution_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv)
 	signal(SIGQUIT, handle_sig_child);
 	signal(SIGINT, handle_sig_child);
 	if (((t_cmdredir *)tmp->content)->process_id == 0)
-		ft_processus_no_pipe(&cmd, &redir, x, cpenv);
+		ft_proc_no_pipe(&cmd, &redir, x, cpenv);
 	else
 	{
 		waitpid(((t_cmdredir *)tmp->content)->process_id, &g_status, 0);
@@ -68,7 +68,7 @@ void	ft_execution_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv)
 	}
 }
 
-void	ft_processus_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
+void	ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 {
 	t_list	*tmp_cmd;
 	t_list	*tmp_redir;
@@ -118,7 +118,7 @@ void	ft_no_pipe_is_executable(t_list **cmdredir, t_list **cpenv, t_data *x)
 	if (x->pc == NULL)
 	{
 		free(x->pc);
-		ft_error_nsfod(((t_words *)cmd->content)->word);
+		ft_error_nsfod(((t_words *)cmd->content)->word, x);
 		ft_exit_bis("-1", x);
 	}
 }

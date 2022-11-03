@@ -6,13 +6,13 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 19:37:56 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/02 14:19:54 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 16:04:19 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_execution_organisation(t_list **cmdredir, t_list **cpenv, t_data *x)
+void	ft_exec_organisation(t_list **cmdredir, t_list **cpenv, t_data *x)
 {
 	t_list	*tmp;
 
@@ -20,11 +20,11 @@ void	ft_execution_organisation(t_list **cmdredir, t_list **cpenv, t_data *x)
 	ft_heredoc(&tmp, x, cpenv);
 	if (tmp->next)
 	{
-		ft_execution_pipe(&tmp, cpenv, x);
+		ft_exec_pipe(&tmp, cpenv, x);
 		ft_waitpid(&tmp);
 	}
 	else
-		ft_execution_no_pipe(&tmp, cpenv, x);
+		ft_exec_no_pipe(&tmp, cpenv, x);
 }
 
 int	ft_nb_cmd(t_list **cmdredir)

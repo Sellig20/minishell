@@ -6,41 +6,18 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 17:04:23 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/09/30 12:44:27 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 12:29:17 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-/*t_words *ft_init_words_kezako(char *word)
-{
-	t_words *new_cp_env;
-
-	new_cp_env = malloc(sizeof(t_words));
-	if (!new_cp_env)
-		return (NULL);
-	new_cp_env->word = ft_strdup(word);
-	return (new_cp_env);
-}
-
-t_words *ft_init_words(char *word, int token)
-{
-	t_words *new_cp_env;
-	(void)token;
-	(void)word;
-
-	new_cp_env = malloc(sizeof(t_words));
-	// if (!new_cp_env)
-	// 	return (NULL);
-	// new_cp_env->word = ft_strdup(word);
-	return (new_cp_env);
-}*/
-int		get_size(t_list *cpenv)
+int	get_size(t_list *cpenv)
 {
 	int	i;
 
 	i = 1;
-	while(cpenv)
+	while (cpenv)
 	{
 		i++;
 		cpenv = cpenv->next;
@@ -68,8 +45,8 @@ char	**get_env(t_list *cpenv)
 
 void	ft_dup_env(char **env, t_list **cpenv, t_data *x)
 {
-	int	e;
-	t_list *new;
+	t_list	*new;
+	int		e;
 
 	e = 0;
 	new = NULL;

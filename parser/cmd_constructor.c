@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/01 14:44:22 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 12:28:19 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 char	*ft_no_env_access_return(t_list **cmd, t_data *x)
 {
 	t_list	*tmp_cmd;
+
 	tmp_cmd = *cmd;
 	x->option = ft_split(((t_words *)tmp_cmd->content)->word, ' ');
 	if (access((x->option[0]), X_OK) == 0)
@@ -36,7 +37,8 @@ int	ft_cmd_and_env(t_data *x, t_list **cmd, t_list **cpenv)
 	else
 	{
 		x->option = get_env(tmp_cmd);
-		if (x->option[0][0] && x->option[0][0] == '/' && access((x->option[0]), X_OK) == 0)
+		if (x->option[0][0] && x->option[0][0] == '/'
+			&& access((x->option[0]), X_OK) == 0)
 			x->pc = (x->option[0]);
 		else
 		{
@@ -52,7 +54,7 @@ int	ft_cmd_and_env(t_data *x, t_list **cmd, t_list **cpenv)
 	return (EXIT_SUCCESS);
 }
 
-int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
+int	ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 {
 	t_list	*cmd_line;
 
@@ -60,7 +62,8 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 	(void)cpenv;
 	x->option = NULL;
 	x->pc = NULL;
-	if (!cmd || !(*cmd)|| (!cmd_line) || !(((t_words *) cmd_line->content)->word))
+	if (!cmd || !(*cmd) || (!cmd_line)
+		|| !(((t_words *)cmd_line->content)->word))
 		return (EXIT_FAILURE);
 	else
 	{
@@ -69,7 +72,3 @@ int ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 	}
 	return (EXIT_SUCCESS);
 }
-
-// dprintf(2, "x->option 0 === %s\n", x->option[0]);
-// dprintf(2, "x->option 1 === %s\n", x->option[1]);
-// dprintf(2, "x->option 2 === %s\n", x->option[2]);

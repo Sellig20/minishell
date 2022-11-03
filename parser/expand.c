@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/30 12:40:31 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/01 14:35:19 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 12:25:10 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,8 @@
 
 extern int	g_status;
 
-int	ft_check_after_doll(char *word)
-{
-	int	i;
-
-	i = 0;
-	if (word[0] == '?')
-		return (5);
-	if (word[i] >= '0' && word[i] <= '9')
-		return (1);
-	else if (!((word[i] >= 'a' && word[i] <= 'z')
-	|| (word[i] >= '0' && word[i] <= '9')
-	|| (word[i] >= 'A' && word[i] <= 'Z')))
-		return (2);
-	while (word[i])
-	{
-		if (!((word[i] >= 'a' && word[i] <= 'z')
-		|| (word[i] >= '0' && word[i] <= '9')
-		|| (word[i] >= 'A' && word[i] <= 'Z')))
-			return (4);
-		i++;
-	}
-	return (3);
-}
-
 char	*ft_methode_1(char *new_word, char *word, t_dollar *d, t_data *x)
 {
-	//dprintf(2, "METHODE 1 pour %s\n", word);
 	int		i;
 	int		j;
 
@@ -61,13 +36,12 @@ char	*ft_methode_1(char *new_word, char *word, t_dollar *d, t_data *x)
 		return (ft_error_ambigous_redirect(word, d->len_word), NULL);
 	}
 	if (x->key == 2 && d->len_word > 1)
-		return (ft_error_nsfod(word), NULL);
+		return (ft_error_nsfod(word, x), NULL);
 	return (new_word);
 }
 
 char	*ft_methode_2(char *new_word, char *word, t_dollar *d)
 {
-	//dprintf(2, "METHODE 2 pour %s\n", word);
 	int	i;
 	int	j;
 
@@ -85,26 +59,8 @@ char	*ft_methode_2(char *new_word, char *word, t_dollar *d)
 	return (new_word);
 }
 
-char	*ft_expand_found_3(t_dollar *d, char *new_word, int len)
-{
-	int		i;
-
-	i = 0;
-	d->len_env = ft_strlen((((t_words *)d->envcp->content)->word)) - (len + 1);
-	new_word = malloc(sizeof(char) * d->len_env + 1);
-	while (((t_words *)d->envcp->content)->word[len + 1 + i])
-	{
-		new_word[i] = ((t_words *)d->envcp->content)->word[len + 1 + i];
-		i++;
-		d->comp = i;
-	}
-	new_word[i] = '\0';
-	return (new_word);
-}
-
 char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x)
 {
-	//dprintf(2, "METHODE 3 pour %s\n", word);
 	char	*tmp;
 	int		i;
 
@@ -112,9 +68,9 @@ char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x)
 	i = 0;
 	while (d->envcp)
 	{
-		i = 0;
 		tmp = ft_strjoin(word, "=");
-		if (ft_strncmp(((t_words *)d->envcp->content)->word, tmp, d->len_word + 1) == 0)
+		if (ft_strncmp(((t_words *)d->envcp->content)->word,
+				tmp, d->len_word + 1) == 0)
 			new_word = ft_expand_found_3(d, new_word, d->len_word);
 		free(tmp);
 		d->envcp = d->envcp->next;
@@ -124,86 +80,32 @@ char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x)
 		new_word = malloc(sizeof(char) * 1 + 1);
 		new_word[i] = '\0';
 		if (x->key == 2)
-			ft_error_ambigous_redirect(word, d->len_word);
+		{
+			x->flag_stop = 2;
+			return (ft_error_ambigous_redirect(word, d->len_word), NULL);
+		}
 	}
-	return (new_word);
-}
-
-char	*ft_expand_not_found_4(t_dollar *d, char *new_word)
-{
-	int		j;
-	char	*null;
-
-	null = NULL;
-	j = 0;
-	null = malloc(sizeof(char) * 1 + 1);
-	null[j] = '\0';
-	new_word = ft_strjoin(null, d->save);
-	free(d->save);
-	free(null);
-	free(d->tmp);
-	return (new_word);
-}
-
-char	*ft_expand_found_4(t_dollar *d, char *new_word)
-{
-	int		j;
-
-	j = 0;
-	d->len_env = ft_strlen((((t_words *)d->envcp->content)->word)) - (d->len_word + 1);
-	new_word = malloc(sizeof(char) * d->len_env + 1);
-	while (((t_words *)d->envcp->content)->word[d->len_word + 1 + j])
-	{
-		new_word[j] = ((t_words *)d->envcp->content)->word[d->len_word + 1 + j];
-		j++;
-		d->comp = j;
-	}
-	new_word[j] = '\0';
-	return (new_word);
-}
-
-char	*ft_expand_4(char *new_word, t_dollar *d)
-{
-	char	*tmp;
-	d->comp = 0;
-
-	while (d->envcp)
-	{
-		d->len_word = ft_strlen(d->tmp);
-		tmp = ft_strjoin(d->tmp, "=");
-		if (ft_strncmp(((t_words *)d->envcp->content)->word, tmp, d->len_word + 1) == 0)
-			new_word = ft_expand_found_4(d, new_word);
-		free(tmp);
-		d->envcp = d->envcp->next;
-	}
-	if (d->comp == 0)
-	{
-		new_word = ft_expand_not_found_4(d, new_word);
-		return (new_word);
-	}
-	new_word = ft_strjoin(new_word, d->save);
-	free(d->save);
-	free(d->tmp);
 	return (new_word);
 }
 
 char	*ft_methode_4(char *new_word, char *word, t_dollar *d)
 {
-	//dprintf(2, "METHODE 4 pour %s\n", word);
 	int		i;
 	int		j;
 	int		k;
+
 	i = 0;
 	j = 0;
 	k = -1;
-	while ((word[i] >= 'a' && word[i] <= 'z') || (word[i] >= '0' && word[i] <= '9')
+	while ((word[i] >= 'a' && word[i] <= 'z')
+		|| (word[i] >= '0' && word[i] <= '9')
 		|| (word[i] >= 'A' && word[i] <= 'Z') || (word[i] == '_'))
 		i++;
 	d->tmp = malloc(sizeof(char) * (i + 1));
 	d->save = malloc(sizeof(char) * (d->len_word - i) + 1);
 	while (++k < i)
 		d->tmp[k] = word[k];
-	d->tmp[k]  = '\0';
+	d->tmp[k] = '\0';
 	while (i < d->len_word && word[i])
 	{
 		d->save[j] = word[i];
@@ -238,4 +140,3 @@ char	*ft_result(t_list **cpenv, int res, char *word, t_data *x)
 		return (NULL);
 	return (new_word);
 }
-

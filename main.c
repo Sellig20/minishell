@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:40:12 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/31 21:53:53 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 20:55:46 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,10 @@ int	main(int ac, char **av, char **env)
 		x.flag_redir = 0;
 		x.flag_stop = 0;
 		x.flag_no_pipe_no_cmd_ok_redir = 0;
-
+		x.finish = 0;
+		x.res_echo = 0;
+		x.only_n = 0;
+		x.bad_friend = 0;
 		if (!(x.line))
 		{
 			write(2, " exit\n", 6);
@@ -150,7 +153,7 @@ int	main(int ac, char **av, char **env)
 					ft_sep_cmd_redir(lst_btw_pipes, segment);
 					ft_lstclear(lst_btw_pipes, ft_free_btw_pipes);
 					//////////////////EXECUTION////////////////
-					ft_execution_organisation(segment, cpenv, &x);
+					ft_exec_organisation(segment, cpenv, &x);
 				}
 			}
 		}

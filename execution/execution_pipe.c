@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 13:16:05 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/02 19:19:36 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 16:06:04 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 extern int	g_status;
 
-void	ft_execution_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
+void	ft_exec_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
 {
 	t_list	*tmp;
 
@@ -32,7 +32,7 @@ void	ft_execution_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
 		signal(SIGQUIT, handle_sig_child);
 		signal(SIGINT, handle_sig_child);
 		if (((t_cmdredir *)tmp->content)->process_id == 0)
-			ft_processus_pipe(&tmp, x, cpenv);
+			ft_proc_pipe(&tmp, x, cpenv);
 		if (((t_cmdredir *)tmp->content)->fd_cmd[0] != STDIN_FILENO)
 			close(((t_cmdredir *)tmp->content)->fd_cmd[0]);
 		if (((t_cmdredir *)tmp->content)->fd_cmd[1] != STDOUT_FILENO)
@@ -44,7 +44,7 @@ void	ft_execution_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
 
 void	ft_create_pipe(t_list **cmdredir, t_data *x)
 {
-	t_list *tmp;
+	t_list	*tmp;
 
 	tmp = *cmdredir;
 	if (pipe(x->fd_pipe) == -1)
@@ -53,7 +53,7 @@ void	ft_create_pipe(t_list **cmdredir, t_data *x)
 	((t_cmdredir *)tmp->content)->fd_cmd[1] = x->fd_pipe[1];
 }
 
-void	ft_processus_pipe(t_list **cmdredir, t_data *x, t_list **cpenv)
+void	ft_proc_pipe(t_list **cmdredir, t_data *x, t_list **cpenv)
 {
 	t_list	*cmd;
 	t_list	*tmp;
@@ -70,9 +70,6 @@ void	ft_processus_pipe(t_list **cmdredir, t_data *x, t_list **cpenv)
 	}
 	else
 		ft_exit_bis("1", x);
-	//dprintf(2, "flag stop = %d | %s\n", x->flag_stop, x->pc);
-	// if (x->flag_stop == 2)
-	// 	ft_exit_bis("1", x);
 	ft_connector_std_fdcmd(&tmp);
 	if (ft_is_exe(&cmd, x, cpenv) == 0)
 		ft_no_pipe_is_executable(&tmp, cpenv, x);

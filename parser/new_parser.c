@@ -1,28 +1,9 @@
 #include "../minishell.h"
 
-// void    ft_visualize_btw_pipes(t_list **lst)
-// {
-//     t_list *tmp; // t_btw_pipes
-//     t_list *portion_words; //t_words
-
-//     tmp = *lst;
-//     portion_words = (t_list *)((t_btw_pipes *)tmp->content)->portion_words;
-//     while (tmp->next)
-//     {
-// 	portion_words = (t_list *)((t_btw_pipes *)tmp->content)->portion_words;
-//         printf("->\n");
-//         visualize_t_words(&portion_words);
-//         tmp = tmp->next;
-//     }
-//     portion_words = (t_list *)((t_btw_pipes *)tmp->content)->portion_words;
-//     printf("->\n");
-//     visualize_t_words(&portion_words);
-// }
-
 static t_list **ft_dupwords(t_list **tmp)
 {
-    t_list  *new;
-	t_list **dup;
+    t_list	*new;
+	t_list	**dup;
     int i;
 
     i = 0;
@@ -47,7 +28,7 @@ static t_list **ft_dupwords(t_list **tmp)
 
 static t_btw_pipes *btw_pipes_init(t_list *portion_words)
 {
-    t_btw_pipes *new_pipe; //t_btw_pipes
+    t_btw_pipes	*new_pipe;
 
     if (portion_words == NULL)
         return (NULL);
@@ -58,9 +39,9 @@ static t_btw_pipes *btw_pipes_init(t_list *portion_words)
 
 void	sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes)
 {
-	t_list *tmp; //t_list de type t_words
-	t_list *new; //t_list de type t_btw_pipes;
-	t_list **dup; //t_list de type t_words;
+	t_list	*tmp;
+	t_list	*new;
+	t_list	**dup;
 
 	*lst_btw_pipes = NULL;
 	new = NULL;
@@ -74,6 +55,3 @@ void	sep_btw_pipes(t_list **lst_words, t_list **lst_btw_pipes)
 		lst_btw_pipes =(t_list **) ft_lstadd_back2(lst_btw_pipes, new);
 	}
 }
-
-
-

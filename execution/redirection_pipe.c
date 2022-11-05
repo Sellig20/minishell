@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 14:02:06 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 17:52:38 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 05:40:39 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	ft_annexe_in_out_pipe(t_list **cmdredir, t_list **redir, t_data *x)
 	}
 	if (x->redir_key == 2)
 	{
+		
 		x->outfile = ft_read_outfile(((t_words *)
 					tmp_redir->next->content)->word, x);
 		if (x->outfile < 0)

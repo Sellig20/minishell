@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 14:39:40 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 17:55:58 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 06:09:48 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,7 @@ void	ft_annexe_in_out_no_pipe(t_list **list, t_data *x)
 		x->outfile = ft_read_outfile(((t_words *)tmp->next->content)->word, x);
 		if (x->flag_redir == 1)
 		{
-			//dprintf(2, "boubou\n");
-			//g_status = 256;
+			dprintf(2, "je return\n");
 			return ;
 		}
 		else
@@ -77,6 +76,7 @@ void	ft_no_pipe_redirection_out(t_list **redir, t_data *x)
 	x->redir_key = 2;
 	if (((t_words *)tmp->content) == NULL)
 		return ;
+	dprintf(2, "------------> %s\n", ((t_words *)tmp->next->content)->word);
 	while (tmp)
 	{
 		if (((t_words *)tmp->content)->token == TOK_TOTO)

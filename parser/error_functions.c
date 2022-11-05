@@ -6,13 +6,15 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 11:22:59 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 12:04:12 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 04:36:15 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_error_command_not_found(char *cmd)
+extern int g_status;
+
+void	ft_error_command_not_f(char *cmd)
 {
 	char	*tmp;
 	char	*tmp1;
@@ -24,9 +26,10 @@ void	ft_error_command_not_found(char *cmd)
 	write(2, to_return, ft_strlen(to_return));
 	free(to_return);
 	free(tmp);
+	free(tmp1);
 }
 
-int	ft_error_ambigous_redirect(char *word, int len)
+int	ft_error_ambigous_redir(char *word, int len)
 {
 	char	*tmp;
 	char	*tmp1;
@@ -34,7 +37,7 @@ int	ft_error_ambigous_redirect(char *word, int len)
 
 	(void)len;
 	tmp = ft_strjoin(word, ": ambigous redirect");
-	tmp1 = ft_strjoin("Minimichel: ", tmp);
+	tmp1 = ft_strjoin("Minimichel: $", tmp);
 	to_return = ft_strjoin(tmp1, "\n");
 	write(2, to_return, ft_strlen(to_return));
 	free(to_return);

@@ -6,7 +6,7 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:22:18 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/26 17:44:38 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/11/03 22:57:13 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,12 @@ int	ft_unset_first(t_list *tmp, char *before_eq)
 	return (check);
 }
 
-int	ft_unset(t_list *cmd, t_list **cpenv, t_data *x)
+int	ft_unset(t_list *cmdredir, t_list **cpenv, t_data *x)
 {
 	t_words	*content;
+	t_list	*cmd;
 
+	cmd = ((t_cmdredir *)cmdredir->content)->cmd;
 	(void) x;
 	if (!(cmd->next))
 		return (1);

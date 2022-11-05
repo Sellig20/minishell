@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 13:19:26 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 12:33:18 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 23:56:21 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ char	*ft_path_construction(t_list **cmd, t_data *x, t_list **cpenv)
 	tmp_cmd = *cmd;
 	path_env = ft_get_path_in_env(x, cpenv);
 	if (!path_env)
-		return (ft_error_command_not_found(x->option[0]),
-			ft_exit_bis("1", x), NULL);
+		return (ft_error_command_not_f(x->option[0]),
+			ft_exit_bis("127", x), NULL);
 	option = get_env(tmp_cmd);
 	if (!option)
 		return (ft_free_array(path_env), NULL);
@@ -85,8 +85,8 @@ char	*ft_path_construction(t_list **cmd, t_data *x, t_list **cpenv)
 		return (pc_final);
 	else
 	{
-		ft_error_command_not_found(x->option[0]);
-		ft_exit_bis("-1", x);
+		ft_error_command_not_f(x->option[0]);
+		ft_exit_bis("127", x);
 	}
 	ft_free_array(path_env);
 	ft_free_array(option);

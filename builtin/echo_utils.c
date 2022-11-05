@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 20:56:47 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 22:10:11 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 22:48:39 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_print_echo(char *str, t_list *cmdredir, t_data *x)
 		ft_putstr_fd(str, ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
 }
 
-int	ft_echo_n_option_yes_not_only(t_list *cmdredir, char *str, t_data *x)
+int	ft_echo_not_n_only(t_list *cmdredir, char *str, t_data *x)
 {
 	t_list	*cmd;
 
@@ -32,7 +32,7 @@ int	ft_echo_n_option_yes_not_only(t_list *cmdredir, char *str, t_data *x)
 	return (x->has_writ);
 }
 
-int	ft_echo_n_option_yes_only(t_list *cmdredir, char *str, t_data *x)
+int	ft_echo_n_opt(t_list *cmdredir, char *str, t_data *x)
 {
 	x->echo_opt = 1;
 	if (x->has_writ > 1)

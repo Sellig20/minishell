@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:35:03 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/03 22:21:09 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 03:30:08 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,8 @@ typedef struct s_data{
 	int		bad_friend;
 	int		has_writ;
 	int		echo_opt;
+	int		count_files;
+	int		is_retrieve;
 	////////////////////////
 	t_list	*letters;
 	t_list	*words;
@@ -213,7 +215,7 @@ char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x);
 char	*ft_methode_4(char *new_word, char *word, t_dollar *d);
 
 //expand_annexe.c
-int	ft_check_after_doll(char *word);
+int	ft_check_after_d(char *word);
 char	*ft_expand_found_3(t_dollar *d, char *new_word, int len);
 char	*ft_expand_not_found_4(t_dollar *d, char *new_word);
 char	*ft_expand_found_4(t_dollar *d, char *new_word);
@@ -260,13 +262,13 @@ int			ft_error_nsfod(char *infile, t_data *x);
 int			ft_perm_error(char *file, t_data *x);
 
 //error_functions.c
-int			ft_error_ambigous_redirect(char *word, int len);
-void		ft_error_command_not_found(char *cmd);
+int			ft_error_ambigous_redir(char *word, int len);
+void		ft_error_command_not_f(char *cmd);
 
 //////////CHECK FILES AN REDIRECTION//////////
 void		ft_catch_file(t_list **after_doll, t_data *x, t_list **envcp);
 void		ft_heredoc(t_list **tmp, t_data *x, t_list **cpenv);
-int			ft_read_infile_heredoc(t_list **tmp, char *lim, char *line, t_list **cpenv, t_data *x);
+int			ft_read_heredoc(char *lim, t_list **cpenv, t_data *x);
 char		*ft_expand_heredoc(char *line, t_list **cpenv, int res, t_data *x);
 int			ft_read_infile(char *infile, t_data *x);
 int			ft_read_outfile_append(char *outfile, t_data *x);
@@ -281,31 +283,29 @@ void		final_doll(t_list **segment, t_list **envcp, t_list **after_doll, t_data *
 t_cmdredir 	*init_with_new_dollar(t_list **segment, t_list **envcp, t_data *x);
 t_list		**ft_expand(t_list **words, t_list **envcp, t_data *x);
 void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
-int			ft_check_after_doll(char *word);
-void		ft_dup_env(char **env, t_list **cpenv, t_data *x);
 t_words 	*ft_init_words(char *word, int token);
 t_words 	*ft_init_words_kezako(char *word);
 char		**get_env(t_list *cpenv);
 
 ///////////////////////////////////////EXECUTION////////////////////////////////////////////////////
-void		ft_exec_organisation(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_exec_organisor(t_list **after_doll, t_list **cpenv, t_data *x);
 int			ft_nb_cmd(t_list **lst);
 void		ft_set_fdcmd(t_list **after_doll, t_data *x);
 
 //execution_no_pipe.c
-void		ft_exec_no_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_exec_no_pipes(t_list **after_doll, t_list **cpenv, t_data *x);
 void		ft_exec_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv);
 void		ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv);
 void		ft_no_pipe_no_cmd_redir(t_list **redir, t_data *x);
 void		ft_no_pipe_is_executable(t_list **cmdredir, t_list **cpenv, t_data *x);
 
 //execution_pipe.c
-void		ft_exec_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
+void		ft_execution_pipe(t_list **after_doll, t_list **cpenv, t_data *x);
 void		ft_proc_pipe(t_list **tmpafterd, t_data *x, t_list **cpenv);
 void		ft_create_pipe(t_list **cmdredir, t_data *x);
 
 //execution_pipe_utils.c
-int			ft_waitpid(t_list **after_doll);
+int			ft_waitpid(t_list **after_doll, t_data *x);
 void		ft_connector_redirections(t_list **cmdredir, t_data *x);
 void		ft_connector_std_fdcmd(t_list **cmdredir);
 int			ft_is_redirection_in(t_list **list);
@@ -397,9 +397,27 @@ int			ft_strn(char *str, t_data *x);
 //echo_utils.c
 int			ft_strlenlen(char *str);
 int			ft_echo_n_option_no(t_list *cmdredir, char *str, t_data *x);
-int			ft_echo_n_option_yes_only(t_list *cmdredir, char *str, t_data *x);
-int			ft_echo_n_option_yes_not_only(t_list *cmdredir, char *str, t_data *x);
+int			ft_echo_n_opt(t_list *cmdredir, char *str, t_data *x);
+int			ft_echo_not_n_only(t_list *cmdredir, char *str, t_data *x);
 void		ft_print_echo(char *str, t_list *cmdredir, t_data *x);
+
+//cd.c
+int			ft_cd(t_list *cmdredir, t_list **cpenv, t_data *x);
+int			ft_cd_organisation(char *tmp, t_list **envcp, char *str, int i, t_data *x);
+char		*ft_cd_back(char *tmp);
+char		*ft_cd_home(char *tmp, t_list **cpenv);
+void		ft_cd_export(char *str, char *word, t_list *cpenv, t_data *x);
+void		ft_cd_unset(char *str, char *str1, t_list *cpenv, t_data *x);
+
+//cd_utils.c
+int			ft_cdquotes(char *str);
+void		ft_cd_is_quotes(char *str);
+char		*ft_check_str(char *str);
+
+//cd_utils2.c
+void	ft_change_oldpwd(char *word, char *tmp, t_list *cpenv, t_data *x);
+void	ft_cd_is_back(char *tmp, char *word, t_list *cpenv, t_data *x);
+void	ft_cd_is_til(char *tmp, char *word, t_list *cpenv, t_data *x);
 
 
 typedef struct s_builtin_value	t_builtin_value;

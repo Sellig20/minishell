@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:41:45 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 16:06:35 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 05:18:00 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,17 @@ void	ft_connector_redirections(t_list **cmdredir, t_data *x)
 	while (redir)
 	{
 		if (ft_is_redirection_in(&redir) == 1)
-			ft_pipe_redirection_in(&tmp, redir, x);
+		{
+			if (x->infile > 2 && x->count_files > 1)
+				close(x->infile);
+			ft_no_pipe_redirection_in(&redir, x);
+		}
 		if (ft_is_redirection_out(&redir) == 1)
-			ft_pipe_redirection_out(&tmp, redir, x);
+		{
+			if (x->outfile > 2 && x->count_files > 1)
+				close(x->outfile);
+			ft_no_pipe_redirection_out(&redir, x);
+		}
 		redir = redir->next;
 	}
 }
@@ -78,10 +86,11 @@ void	ft_connector_std_fdcmd(t_list **cmdredir)
 	}
 }
 
-int	ft_waitpid(t_list **cmdredir)
+int	ft_waitpid(t_list **cmdredir, t_data *x)
 {
 	t_list	*tmp;
 
+	(void)x;
 	tmp = *cmdredir;
 	while (tmp)
 	{

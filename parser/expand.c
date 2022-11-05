@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/30 12:40:31 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 12:25:10 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 05:01:15 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ char	*ft_methode_1(char *new_word, char *word, t_dollar *d, t_data *x)
 		j++;
 		i++;
 	}
-	if (x->key == 2 && d->len_word == 1)
+	if (x->key == 2 && d->len_word == 1 && x->flag_heredoc != 42)
 	{
 		x->flag_stop = 2;
-		return (ft_error_ambigous_redirect(word, d->len_word), NULL);
+		return (ft_error_ambigous_redir(word, d->len_word), NULL);
 	}
 	if (x->key == 2 && d->len_word > 1)
 		return (ft_error_nsfod(word, x), NULL);
@@ -79,10 +79,10 @@ char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x)
 	{
 		new_word = malloc(sizeof(char) * 1 + 1);
 		new_word[i] = '\0';
-		if (x->key == 2)
+		if (x->key == 2 && x->flag_heredoc != 42)
 		{
 			x->flag_stop = 2;
-			return (ft_error_ambigous_redirect(word, d->len_word), NULL);
+			return (ft_error_ambigous_redir(word, d->len_word), NULL);
 		}
 	}
 	return (new_word);

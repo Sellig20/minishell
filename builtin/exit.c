@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 17:19:42 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/01 14:59:13 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/04 19:18:19 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,12 @@ int	get_exit(long long nb)
 		return (256 - ((nb * (-1)) % 256));
 }
 
-int	ft_exit(t_list *cmd, t_list **cpenv, t_data *x)
+int	ft_exit(t_list *cmdredir, t_list **cpenv, t_data *x)
 {
+	t_list		*cmd;
 	long long	nb;
 
+	cmd = ((t_cmdredir *)cmdredir->content)->cmd;
 	(void) x;
 	(void) cpenv;
 	(void) cmd;

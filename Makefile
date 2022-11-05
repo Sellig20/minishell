@@ -6,7 +6,7 @@
 #    By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/22 14:34:45 by evsuits           #+#    #+#              #
-#    Updated: 2022/11/03 20:57:36 by jecolmou         ###   ########.fr        #
+#    Updated: 2022/11/05 01:40:53 by jecolmou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,6 @@ SRCS= main.c \
 	  ./parser/expand.c \
 	  ./parser/expand_annexe.c \
 	  ./parser/executable.c \
-	  ./parser/sep_cmd.c \
 	  ./parser/cmd_constructor.c\
 	  ./parser/error_functions.c \
 	  ./execution/execution_pipe.c \
@@ -60,6 +59,8 @@ SRCS= main.c \
 	  ./builtin/echo.c \
 	  ./builtin/echo_utils.c \
 	  ./builtin/cd.c \
+	  ./builtin/cd_utils.c \
+	  ./builtin/cd_utils2.c \
 	  ./builtin/exit.c \
 	  ./builtin/exit_utils.c \
 	  ./builtin/env.c \

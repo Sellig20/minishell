@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 17:56:57 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 17:39:19 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 06:12:03 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,28 @@
 
 extern int	g_status;
 
-void	ft_exec_no_pipe(t_list **cmdredir, t_list **cpenv, t_data *x)
+void	ft_exec_no_pipes(t_list **cmdredir, t_list **cpenv, t_data *x)
 {
 	t_list	*tmp;
 	t_list	*cmd;
 	t_list	*redir;
-
 	tmp = *cmdredir;
 	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
 	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
 	ft_set_fdcmd(&tmp, x);
 	if (x->flag_stop == 2)
+	{
+		g_status = 1;
 		return ;
+	}
 	if (cmd->content)
 	{
 		if (ft_is_builtin(&tmp, x, cpenv) == 0)
+		{
+			if (x->outfile)
+				close(x->outfile);
 			return ;
+		}
 		if (ft_is_exe(&cmd, x, cpenv) == 0)
 			ft_no_pipe_is_executable(&tmp, cpenv, x);
 		ft_exec_no_pipe_annexe(&tmp, x, cpenv);
@@ -75,12 +81,25 @@ void	ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 
 	tmp_cmd = *cmd;
 	tmp_redir = *redir;
+		dprintf(2, " 2 x->count_file = %d\n", x->count_files);
 	while (tmp_redir)
 	{
+		dprintf(2, "count_files = %d\n", x->count_files);
 		if (ft_is_redirection_in(&tmp_redir) == 1)
+		{
+			if (x->infile > 2 && x->count_files > 1)
+				close(x->infile);
 			ft_no_pipe_redirection_in(&tmp_redir, x);
+		}
 		if (ft_is_redirection_out(&tmp_redir) == 1)
+		{
+			if (x->outfile > 2 && x->count_files > 1)
+			{
+				close(x->outfile);
+				dprintf(2, "oui je clooooose\n");
+			}
 			ft_no_pipe_redirection_out(&tmp_redir, x);
+		}
 		tmp_redir = tmp_redir->next;
 	}
 	if (x->flag_stop == 2)
@@ -88,7 +107,10 @@ void	ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 	if (x->flag_executable != 2)
 		ft_cmd_constructor(&tmp_cmd, x, cpenv);
 	if (x->pc != NULL)
+	{
+		g_status = 0;
 		execve(x->pc, x->option, get_env(*cpenv));
+	}
 	free(x->pc);
 	free(x->option);
 }

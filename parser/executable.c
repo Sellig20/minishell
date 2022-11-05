@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:33:46 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/02 19:54:26 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/04 21:56:38 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int	ft_is_exe(t_list **tmp, t_data *x, t_list **cpenv)
 
 	executable = NULL;
 	list = *tmp;
+	if (!list || !((t_words *)list->content) || !((t_words *)list->content)->word)
+		return (EXIT_FAILURE);
 	(void)x;
 	(void)cpenv;
 	while (list)

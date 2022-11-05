@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 14:42:12 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/31 16:26:44 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 22:40:46 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*ft_expand_one_btw_quot(t_list **tmp, t_list **envcp, t_data *x)
 	{
 		if (((t_words *)(*tmp)->content)->token == TOK_DOLL && (*tmp)->next)
 		{
-			res = ft_check_after_doll(((t_words *)(*tmp)->next->content)->word);
+			res = ft_check_after_d(((t_words *)(*tmp)->next->content)->word);
 			new_echo = ft_result(envcp, res,
 					((t_words *)(*tmp)->next->content)->word, x);
 			if (new_echo == NULL)
@@ -73,23 +73,19 @@ char	*until_next_del(t_list *tmp, t_list *end, t_list **envcp, t_data *x)
 
 	word = NULL;
 	btw_del = NULL;
-	while (tmp && tmp != end)
+	while (tmp && tmp->content && tmp != end)
 	{
-		if (((t_words *) tmp->content)->token == TOK_WORD)
+		if (((t_words *) tmp->content)->token == TOK_DOLL
+			&& x->flag_heredoc != 42)
+			btw_del = doll_btw_del(&tmp, btw_del, envcp, x);
+		else if (tmp->content)
 		{
 			word = btw_del;
 			btw_del = ft_strjoin(word, ((t_words *) tmp->content)->word);
 			free(word);
 		}
-		else if (((t_words *) tmp->content)->token == TOK_DOLL)
-		{
-			btw_del = doll_btw_del(&tmp, btw_del, envcp, x);
-			// if (btw_del == NULL)
-			// 	return (NULL);
-		}
 		tmp = tmp->next;
 	}
-	//dprintf(2, "btw del = %s\n", btw_del);
 	return (btw_del);
 }
 

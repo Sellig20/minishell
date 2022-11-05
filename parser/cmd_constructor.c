@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 12:28:19 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/04 18:37:53 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ char	*ft_no_env_access_return(t_list **cmd, t_data *x)
 	t_list	*tmp_cmd;
 
 	tmp_cmd = *cmd;
-	x->option = ft_split(((t_words *)tmp_cmd->content)->word, ' ');
+	x->option = get_env(tmp_cmd);
 	if (access((x->option[0]), X_OK) == 0)
 		x->pc = (x->option[0]);
 	else
-		return (ft_error_command_not_found(x->option[0]), NULL);
+		return (ft_error_command_not_f(x->option[0]), NULL);
 	return (x->pc);
 }
 

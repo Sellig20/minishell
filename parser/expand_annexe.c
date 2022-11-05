@@ -6,13 +6,13 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 12:20:15 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 12:26:42 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 22:40:40 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_check_after_doll(char *word)
+int	ft_check_after_d(char *word)
 {
 	int	i;
 

@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:40:12 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/03 20:55:46 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 04:49:50 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,18 @@ int	sizeof_string_tab(char **str)
 
 int ft_nb_pipes(t_list **lst_words)
 {
-    int nb_pipes;
-    t_list *tmp;
+	int nb_pipes;
+	t_list *tmp;
 
-    nb_pipes = 0;
-    tmp = *lst_words;
-    while (tmp)
-    {
-        if (((t_words *)tmp->content)->token == 0)
-            nb_pipes++;
-        tmp = tmp->next;
-    }
-    return (nb_pipes);
+	nb_pipes = 0;
+	tmp = *lst_words;
+	while (tmp)
+	{
+		if (((t_words *)tmp->content)->token == 0)
+			nb_pipes++;
+		tmp = tmp->next;
+	}
+	return (nb_pipes);
 }
 
 void	handle_sig_parent(int sig)
@@ -65,7 +65,7 @@ void	handle_sig_child(int sig)
 {
 	if (sig == SIGINT)
 	{
-		sig = SIGQUIT;
+	//	sig = SIGQUIT;
 		write(2, "\n", 1);
 //		g_status = 2;
 	}
@@ -122,6 +122,9 @@ int	main(int ac, char **av, char **env)
 		x.res_echo = 0;
 		x.only_n = 0;
 		x.bad_friend = 0;
+		x.flag_heredoc = 0;
+		x.count_files = 0;
+		x.is_retrieve = 0;
 		if (!(x.line))
 		{
 			write(2, " exit\n", 6);
@@ -149,11 +152,13 @@ int	main(int ac, char **av, char **env)
 					ft_lim_protection(lst_words);
 					new_expand(lst_words, cpenv, &x);
 					ft_delete_space(lst_words);
+					//mavisualize_t_words(lst_words);
 					sep_btw_pipes(lst_words, lst_btw_pipes);
 					ft_sep_cmd_redir(lst_btw_pipes, segment);
+					//ft_visualize_cmd_redir(segment);
 					ft_lstclear(lst_btw_pipes, ft_free_btw_pipes);
 					//////////////////EXECUTION////////////////
-					ft_exec_organisation(segment, cpenv, &x);
+					ft_exec_organisor(segment, cpenv, &x);
 				}
 			}
 		}

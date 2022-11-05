@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 13:34:50 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/02 15:21:15 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 22:19:22 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ char	*ft_expand_heredoc(char *line, t_list **cpenv, int res, t_data *x)
 	int		i;
 	int		j;
 	char	*final;
+
 	(void)res;
 	(void)cpenv;
 	(void)x;
-
 	i = 1;
 	j = 0;
 	final = malloc(sizeof(char) * ft_strlen(line - 1) + 1);
@@ -28,7 +28,6 @@ char	*ft_expand_heredoc(char *line, t_list **cpenv, int res, t_data *x)
 		return (NULL);
 	while (line[i])
 	{
-
 		final[j] = line[i];
 		i++;
 		j++;
@@ -36,120 +35,131 @@ char	*ft_expand_heredoc(char *line, t_list **cpenv, int res, t_data *x)
 	return (final);
 }
 
-char	*ft_supp_quotes(char *lim, int len)
+char	*get_lim(t_list *letters)
 {
-	char	*new_lim;
-	int		i;
-	int		j;
-
-	new_lim = calloc(sizeof(char), len);
-	if (!new_lim)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (lim[i])
-	{
-		if (lim[i] == '"' && lim[i + 1] == '"')
-			i += 2;
-		else if (lim[i] == '\'' && lim[i + 1] == '\'')
-			i += 2;
-		else
-		{
-			if (((lim[i] == '"') && (lim[i + 1] != '"') && (lim[i + 1 ] != '\'')))
-			{
-				while (lim[i] != '"')
-				{
-					new_lim[j] = lim[i];
-					i++;
-					j++;
-				}
-				i++;
-			}
-			else if (((lim[i] == '\'') && (lim[i + 1] != '"') && (lim[i + 1 ] != '\'')) )
-			{
-				while (lim[i] != '"')
-				{
-					new_lim[j] = lim[i];
-					i++;
-					j++;
-				}
-				i++;
-			}
-			new_lim[j] = lim[i];
-			i++;
-			j++;
-		}
-	}
-	return (new_lim);
-}
-
-int	ft_lim_is_quotes(char *lim)
-{
-	int		i;
-
-	i = 0;
-	while (lim[i])
-	{
-		if (lim[i] == '"' || lim[i] == '\'')
-			return (EXIT_SUCCESS);
-		i++;
-	}
-	return (EXIT_FAILURE);
-}
-
-int	ft_read_infile_heredoc(t_list **list, char *lim, char *line, t_list **cpenv, t_data *x)
-{
-	int		fd;
 	char	*word;
-	t_list *letter;
-	t_list *words;
 	int		len;
+	t_list	*tmp_len;
+	t_list	*tmp;
+	int		i;
 
-	len = ft_strlen(lim);
-	(void)list;
-	letter = malloc(sizeof(t_letters));
-	words = malloc(sizeof(t_words));
-	word = ".HEREDOC";
-	word = ft_strjoin(word, x->hered);
-	fd = open(word, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (fd < 0)
-		return (ft_putstr_fd("error heredoc\n", 2), EXIT_FAILURE);
-	if (ft_lim_is_quotes(lim) == 0)
-		lim = ft_supp_quotes(lim, len);
-	dprintf(2, "lim = %s\n", lim);
+	len = 1;
+	i = 0;
+	tmp_len = letters;
+	tmp = letters;
+	while (tmp_len && len++ > 0)
+		tmp_len = tmp_len->next;
+	word = malloc(sizeof(char) * len);
+	while (tmp)
+	{
+		if (((t_letters *) tmp->content)->token != TOK_QUOT)
+			word[i++] = ((t_letters *) tmp->content)->letter;
+		tmp = tmp->next;
+	}
+	word[i] = '\0';
+	return (word);
+}
+
+void	write_heredoc(t_list **words, int fd)
+{
+	t_list	*tmp;
+
+	tmp = *words;
+	while (words && tmp && tmp->content)
+	{
+		write(fd, ((t_words *)tmp->content)->word,
+			ft_strlen(((t_words *)tmp->content)->word));
+		tmp = tmp->next;
+	}
+	write(fd, "\n", 1);
+}
+
+void	heredoc_loop(char *new_lim, int fd, t_list **cpenv, t_data *x)
+{
+	t_list	**letter;
+	t_list	**words;
+	char	*line;
+
 	while (1)
 	{
 		line = readline(">");
-		if (!(line))
-			return (close(fd), fd);
-		if (ft_strncmp(lim, line, ft_strlen(lim)) == 0)
-			break;
-		pre_lexeur(x, line, &letter);
-		group_letters(&letter, &words);
-		new_expand(&words, cpenv, x);
-		while (words)
-		{
-			write(fd, ((t_words *)words->content)->word, ft_strlen(((t_words *)words->content)->word));
-			words = words->next;
-		}
-		write(fd, "\n", 1);
-		line = ft_strjoin(line, "\n");
+		letter = malloc(sizeof(t_list *));
+		*letter = NULL;
+		words = malloc(sizeof(t_list *));
+		*words = NULL;
+		if (!(line) || ft_strcmp(new_lim, line) == 0)
+			break ;
+		pre_lexeur(x, line, letter);
+		group_letters(letter, words);
+		new_expand(words, cpenv, x);
+		write_heredoc(words, fd);
+		ft_lstclear(letter, ft_free_letters);
+		ft_lstclear(words, ft_free_words);
+		free(line);
 	}
+	ft_lstclear(letter, ft_free_letters);
+	ft_lstclear(words, ft_free_words);
 	free(line);
+}
+
+int	ft_read_heredoc(char *lim, t_list **cpenv, t_data *x)
+{
+	int		fd;
+	char	*word;
+	char	*new_lim;
+	t_list	**lim_letters;
+
+	new_lim = NULL;
+	lim_letters = malloc(sizeof(t_letters *));
+	*lim_letters = NULL;
+	word = ".HEREDOC";
+	word = ft_strjoin(word, x->hered);
+	fd = open(word, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	free(word);
+	if (fd < 0)
+		return (ft_putstr_fd("error heredoc\n", 2), EXIT_FAILURE);
+	x->flag_heredoc = 42;
+	pre_lexeur(x, lim, lim_letters);
+	new_lim = get_lim(*lim_letters);
+	heredoc_loop(new_lim, fd, cpenv, x);
+	ft_lstclear(lim_letters, ft_free_letters);
+	free(new_lim);
 	close(fd);
 	return (fd);
 }
 
+void	is_heredoc(char *c, t_list *redir, t_list **cpenv, t_data *x)
+{
+	char	*word;
+
+	if ((t_words *)redir->content
+		&& ((t_words *)redir->content)->token == TOK_FRFR)
+	{
+		x->hered = malloc(sizeof(char) * 2);
+		x->hered[0] = *c;
+		x->hered[1] = '\0';
+		x->infile = ft_read_heredoc(
+				((t_words *)redir->next->content)->word, cpenv, x);
+		((t_words *)redir->content)->token = TOK_FROM;
+		free(((t_words *)redir->next->content)->word);
+		word = ft_strjoin(".HEREDOC", x->hered);
+		((t_words *)redir->next->content)->word
+			= ft_strdup(word);
+		free(word);
+		(*c)++;
+		free(x->hered);
+	}
+}
+
 void	ft_heredoc(t_list **tmp, t_data *x, t_list **cpenv)
 {
-	t_list *list;
-	t_list *redir;
+	t_list	*list;
+	t_list	*redir;
 	char	c;
 
 	list = *tmp;
-	redir = (t_list *)((t_cmdredir *)list->content)->redirection;//necessaire ?
+	redir = (t_list *)((t_cmdredir *)list->content)->redirection;
 	c = 'a';
-	x->hered = malloc(sizeof(char) * 2);
 	while (list)
 	{
 		if (((t_cmdredir *)list->content)->redirection)
@@ -157,20 +167,10 @@ void	ft_heredoc(t_list **tmp, t_data *x, t_list **cpenv)
 			redir = (t_list *)((t_cmdredir *)list->content)->redirection;
 			while (redir)
 			{
-				if ((t_words *)redir->content && ((t_words *)redir->content)->token == TOK_FRFR)
-				{
-					x->hered[0] = c;
-					x->hered[1] = '\0';
-					x->infile = ft_read_infile_heredoc(&redir, ((t_words *)redir->next->content)->word, x->line, cpenv, x);
-					((t_words *)redir->content)->token = TOK_FROM;
-					free(((t_words *)redir->next->content)->word);
-					((t_words *)redir->next->content)->word = ft_strdup(ft_strjoin(".HEREDOC", x->hered));
-					c++;
-				}
+				is_heredoc(&c, redir, cpenv, x);
 				redir = redir->next;
 			}
-			list = list->next;
 		}
+		list = list->next;
 	}
-	free(x->hered);
 }

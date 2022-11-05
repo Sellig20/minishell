@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:42:07 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 12:03:09 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/04 18:39:40 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ int	ft_is_null(char *cmd)
 {
 	if (ft_strlen(cmd) == 0)
 	{
-		printf("Error \n");
+		printf("Minimichel: Error \n");
 		return (false);
 	}
 	else if (ft_is_space(cmd) == 0)
 	{
-		ft_putstr_fd("JE SUIS FT_IS_NULL DANS GESTION\n", 2);
+		ft_putstr_fd("Minimichel: Error\n", 2);
 		return (false);
 	}
 	return (1);

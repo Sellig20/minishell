@@ -1,7 +1,7 @@
 
 #include "../minishell.h"
 
-int	ft_env(t_list *cmd, t_list **cpenv, t_data *x)
+int	ft_env(t_list *cmdredir, t_list **cpenv, t_data *x)
 {
 	t_list	*tmp;
 	t_words	*content;
@@ -10,7 +10,6 @@ int	ft_env(t_list *cmd, t_list **cpenv, t_data *x)
 	int		index_eq;
 
 	(void) x;
-	(void) cmd;
 	tmp = *cpenv;
 	while (tmp)
 	{
@@ -21,7 +20,10 @@ int	ft_env(t_list *cmd, t_list **cpenv, t_data *x)
 			before_eq = ft_strndup(content->word, index_eq);
 			after_eq = ft_substr(content->word,
 					index_eq + 1, ft_strlen(content->word));
-			dprintf(((t_cmdredir *)cmd->content)->fd_cmd[1], "%s=%s\n", before_eq, after_eq);
+			ft_putstr_fd(before_eq, ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
+			ft_putstr_fd("=", ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
+			ft_putstr_fd(after_eq, ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
+			ft_putstr_fd("\n", ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
 			free(before_eq);
 			free(after_eq);
 		}

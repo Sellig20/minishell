@@ -60,3 +60,22 @@ void    ft_visualize_cmd_redir(t_list **list)
         tmp = tmp->next;
     }
 }
+
+void    ft_visualize_btw_pipes(t_list **lst)
+{
+    t_list *tmp; // t_btw_pipes
+    t_list *portion_words; //t_words
+
+    tmp = *lst;
+    portion_words = (t_list *)((t_btw_pipes *)tmp->content)->portion_words;
+    while (tmp->next)
+    {
+	portion_words = (t_list *)((t_btw_pipes *)tmp->content)->portion_words;
+        printf("->\n");
+        visualize_t_words(&portion_words);
+        tmp = tmp->next;
+    }
+    portion_words = (t_list *)((t_btw_pipes *)tmp->content)->portion_words;
+    printf("->\n");
+    visualize_t_words(&portion_words);
+}

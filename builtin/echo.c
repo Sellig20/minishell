@@ -6,11 +6,13 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 11:17:56 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/03 22:11:20 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/05 06:14:07 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//extern int g_status;
 
 int	ft_strn(char *str, t_data *x)
 {
@@ -56,9 +58,9 @@ int	ft_orga_n(t_list *cmdredir, char *str, t_data *x)
 		else
 		{
 			if (x->res_echo == 2)
-				x->has_writ = ft_echo_n_option_yes_not_only(cmdredir, str, x);
+				x->has_writ = ft_echo_not_n_only(cmdredir, str, x);
 			else if (x->res_echo == 1)
-				x->echo_opt = ft_echo_n_option_yes_only(cmdredir, str, x);
+				x->echo_opt = ft_echo_n_opt(cmdredir, str, x);
 		}
 		cmd = cmd->next;
 	}

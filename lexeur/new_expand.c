@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 21:44:28 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/31 19:00:50 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 15:13:01 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ int	check_del(t_list *tmp)
 void	new_expand(t_list **lst_words, t_list **envcp, t_data *x)
 {
 	t_list	*tmp;
+
 	tmp = *lst_words;
 	ft_check_ambi(&tmp, x);
 	if (tmp && check_del(tmp) == 0)

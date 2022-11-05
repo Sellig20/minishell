@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:41:59 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/02 15:18:36 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/03 15:11:56 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	visualize_t_letters(t_list **lst_letters)
 		((t_letters *)tmp->content)->token);
 }
 
-int	pre_lexeur(t_data *x, char *line,  t_list **lst_letters)
+int	pre_lexeur(t_data *x, char *line, t_list **lst_letters)
 {
 	int		i;
 	int		*j;
@@ -106,7 +106,7 @@ int	pre_lexeur(t_data *x, char *line,  t_list **lst_letters)
 		ft_lstadd_back(lst_letters, new);
 		i++;
 	}
-	if (*j != DEFAULT_STATE)
+	if (x->flag_heredoc != 42 && *j != DEFAULT_STATE)
 		return (syntax_error(*lst_letters, 8), 1);
 	free(j);
 	return (0);

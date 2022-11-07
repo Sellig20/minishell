@@ -17,12 +17,12 @@ extern int	g_status;
 int	ft_is_redirection_in(t_list **redir)
 {
 	t_list	*tmp_redir;
-
+	//dprintf(2,"here\n");
 	tmp_redir = *redir;
 	if (((t_words *)tmp_redir->content) == NULL)
 		return (0);
-	if (ft_strcmp(((t_words *)tmp_redir->content)->word, "<") == 0
-		|| ft_strcmp(((t_words *)tmp_redir->content)->word, "<<") == 0)
+	if (((t_words *)tmp_redir->content)->token == TOK_FROM
+			|| ((t_words *)tmp_redir->content)->token  ==TOK_FRFR)
 		return (1);
 	else
 		return (0);
@@ -36,8 +36,8 @@ int	ft_is_redirection_out(t_list **redir)
 	tmp_redir = *redir;
 	if (((t_words *)tmp_redir->content) == NULL)
 		return (0);
-	if (ft_strcmp(((t_words *)tmp_redir->content)->word, ">") == 0
-		|| ft_strcmp(((t_words *)tmp_redir->content)->word, ">>") == 0)
+	if (((t_words *)tmp_redir->content)->token == TOK_TO
+			|| ((t_words *)tmp_redir->content)->token == TOK_TOTO)
 		return (1);
 	else
 		return (0);
@@ -55,13 +55,13 @@ void	ft_connector_redirections(t_list **cmdredir, t_data *x)
 	{
 		if (ft_is_redirection_in(&redir) == 1)
 		{
-			if (x->infile > 2 && x->count_files > 1)
+			if (x->infile && x->count_files > 1)
 				close(x->infile);
 			ft_no_pipe_redirection_in(&redir, x);
 		}
 		if (ft_is_redirection_out(&redir) == 1)
 		{
-			if (x->outfile > 2 && x->count_files > 1)
+			if (x->outfile && x->count_files > 1)
 				close(x->outfile);
 			ft_no_pipe_redirection_out(&redir, x);
 		}

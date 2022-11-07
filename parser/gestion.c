@@ -16,6 +16,8 @@ void	ft_check_ambi(t_list **tmp, t_data *x)
 {
 	t_list	*list;
 
+	if (!tmp || x->flag_heredoc != 0)
+		return ;
 	list = *tmp;
 	while (list)
 	{

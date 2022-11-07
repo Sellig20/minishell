@@ -30,7 +30,7 @@ int	ft_onedupcmd(t_list **portion, t_list **dup)
 	{
 		content = (t_words *)(*portion)->content;
 		new = ft_lstnew((void *)words_init(content->word, content->token));
-		dup = (t_list **)ft_lstadd_back2(dup, new);
+		ft_lstadd_back(dup, new);
 		*portion = (*portion)->next;
 	}
 	return (0);
@@ -74,11 +74,11 @@ static void	ft_one_dupredir(t_list **portion, t_list **dup)
 	if (tmp->token != TOK_WORD && tmp->token != TOK_DOLL)
 	{
 		new = ft_lstnew((void *) words_init(tmp->word, tmp->token));
-		dup = (t_list **)ft_lstadd_back2(dup, new);
+		ft_lstadd_back(dup, new);
 		*portion = (*portion)->next;
 		tmp = (t_words *)(*portion)->content;
 		new = ft_lstnew((void *) words_init(tmp->word, tmp->token));
-		dup = (t_list **)ft_lstadd_back2(dup, new);
+		ft_lstadd_back(dup, new);
 	}
 }
 
@@ -104,29 +104,6 @@ t_list	**ft_dupredir(t_list *portion)
 	return (dup);
 }
 
-t_cmdredir	*cmdredir_init(t_list *portion)
-{
-	t_cmdredir	*list;
-	t_list		**remplir_cmd;
-	t_list		**remplir_redir;
-
-	remplir_cmd = NULL;
-	remplir_redir = NULL;
-	if (!portion)
-		return (NULL);
-	list = malloc(sizeof(t_cmdredir));
-	if (!list)
-		return (NULL);
-	remplir_cmd = ft_dupcmd(portion);
-	remplir_redir = ft_dupredir(portion);
-	list->cmd = (*remplir_cmd);
-	list->redirection = (*remplir_redir);
-	list->process_id = -2;
-	free(remplir_cmd);
-	free(remplir_redir);
-	return (list);
-}
-
 void	ft_sep_cmd_redir(t_list **btw_pipes, t_list **future)
 {
 	t_list		*btw;
@@ -141,7 +118,7 @@ void	ft_sep_cmd_redir(t_list **btw_pipes, t_list **future)
 	{
 		portion = (t_btw_pipes *) btw->content;
 		new = ft_lstnew((void *) cmdredir_init(portion->portion_words));
-		future = (t_list **)ft_lstadd_back2(future, new);
+		ft_lstadd_back(future, new);
 		btw = btw->next;
 	}
 }

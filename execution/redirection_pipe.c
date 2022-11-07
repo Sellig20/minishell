@@ -28,17 +28,16 @@ void	ft_annexe_in_out_pipe(t_list **cmdredir, t_list **redir, t_data *x)
 		if (x->infile < 0)
 			ft_error_nsfod(((t_words *)tmp_redir->next->content)->word, x);
 		if (x->infile)
-			((t_cmdredir *) tmp->content)->fd_cmd[0] = x->infile;
+			((t_cmdredir *)tmp->content)->fd_cmd[0] = x->infile;
 	}
 	if (x->redir_key == 2)
 	{
-		
 		x->outfile = ft_read_outfile(((t_words *)
 					tmp_redir->next->content)->word, x);
 		if (x->outfile < 0)
 			ft_perm_error(((t_words *)tmp_redir->next->content)->word, x);
 		if (x->outfile)
-			((t_cmdredir *) tmp->content)->fd_cmd[1] = x->outfile;
+			((t_cmdredir *)tmp->content)->fd_cmd[1] = x->outfile;
 	}
 }
 

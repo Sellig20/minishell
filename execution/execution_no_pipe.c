@@ -19,6 +19,7 @@ void	ft_exec_no_pipes(t_list **cmdredir, t_list **cpenv, t_data *x)
 	t_list	*tmp;
 	t_list	*cmd;
 	t_list	*redir;
+
 	tmp = *cmdredir;
 	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
 	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
@@ -30,7 +31,7 @@ void	ft_exec_no_pipes(t_list **cmdredir, t_list **cpenv, t_data *x)
 	}
 	if (cmd->content)
 	{
-		if (ft_is_builtin(&tmp, x, cpenv) == 0)
+		if (ft_is_builtin(&tmp, x, cpenv, 0) == 0)
 		{
 			if (x->outfile)
 				close(x->outfile);
@@ -45,7 +46,9 @@ void	ft_exec_no_pipes(t_list **cmdredir, t_list **cpenv, t_data *x)
 			free(x->pc);
 	}
 	else
+	{
 		ft_no_pipe_no_cmd_redir(&redir, x);
+	}
 }
 
 void	ft_exec_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv)
@@ -81,23 +84,18 @@ void	ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 
 	tmp_cmd = *cmd;
 	tmp_redir = *redir;
-		dprintf(2, " 2 x->count_file = %d\n", x->count_files);
 	while (tmp_redir)
 	{
-		dprintf(2, "count_files = %d\n", x->count_files);
 		if (ft_is_redirection_in(&tmp_redir) == 1)
 		{
-			if (x->infile > 2 && x->count_files > 1)
+			if (x->infile && x->count_files > 1)
 				close(x->infile);
 			ft_no_pipe_redirection_in(&tmp_redir, x);
 		}
 		if (ft_is_redirection_out(&tmp_redir) == 1)
 		{
-			if (x->outfile > 2 && x->count_files > 1)
-			{
+			if (x->outfile && x->count_files > 1)
 				close(x->outfile);
-				dprintf(2, "oui je clooooose\n");
-			}
 			ft_no_pipe_redirection_out(&tmp_redir, x);
 		}
 		tmp_redir = tmp_redir->next;
@@ -118,14 +116,38 @@ void	ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 void	ft_no_pipe_no_cmd_redir(t_list **redir, t_data *x)
 {
 	t_list	*tmp_redir;
-
 	tmp_redir = *redir;
 	x->flag_redir = 1;
 	x->flag_no_pipe_no_cmd_ok_redir = 1;
+	// while (tmp_redir)
+	// {
+	// 	if (ft_is_redirection_in(&tmp_redir) == 1)
+	// 	{
+	// 		dprintf(2, "count : %d\n", x->count_files);
+	// 		dprintf(2, "file : %d\n", x->infile);
+	// 		if (x->infile && x->count_files > 1)
+	// 		{
+	// 			close(x->infile);
+	// 			dprintf(2, "close : %d\n", x->infile);
+	// 		}
+	// 		ft_no_pipe_redirection_in(&tmp_redir, x);
+	// 	}
+	// 	if (ft_is_redirection_out(&tmp_redir) == 1)
+	// 	{
+	// 		if (x->outfile && x->count_files > 1)
+	// 			close(x->outfile);
+	// 		ft_no_pipe_redirection_out(&tmp_redir, x);
+	// 	}
+	// 	tmp_redir = tmp_redir->next;
+	// }
 	if (ft_is_redirection_in(&tmp_redir) == 1)
 		ft_no_pipe_redirection_in(&tmp_redir, x);
 	if (ft_is_redirection_out(&tmp_redir) == 1)
 		ft_no_pipe_redirection_out(&tmp_redir, x);
+	// if (x->infile)
+	// 	close(x->infile);
+	// if (x->outfile)
+	// 	close(x->outfile);
 }
 
 void	ft_no_pipe_is_executable(t_list **cmdredir, t_list **cpenv, t_data *x)

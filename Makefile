@@ -32,6 +32,8 @@ SRCS= main.c \
 	  ./parser/executable.c \
 	  ./parser/cmd_constructor.c\
 	  ./parser/error_functions.c \
+	  ./parser/heredoc_utils.c \
+	  ./parser/cmd_redir_utils.c \
 	  ./execution/execution_pipe.c \
 	  ./execution/execution_no_pipe.c \
 	  ./execution/redirection_pipe.c \

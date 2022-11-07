@@ -55,7 +55,7 @@ void	ft_dup_env(char **env, t_list **cpenv, t_data *x)
 	while (env[e])
 	{
 		new = ft_lstnew((void *) words_init(env[e], TOK_ENV));
-		cpenv = (t_list **)ft_lstadd_back2(cpenv, new);
+		ft_lstadd_back(cpenv, new);
 		e++;
 	}
 }

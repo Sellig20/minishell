@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-extern int g_status;
+extern int	g_status;
 
 void	ft_error_command_not_f(char *cmd)
 {

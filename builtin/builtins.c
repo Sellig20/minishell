@@ -12,10 +12,13 @@
 
 #include "../minishell.h"
 
-extern int g_status;
+extern int	g_status;
 
-int	ft_is_is_builtin(char *word, int i)
+int	ft_is_is_builtin(char *word)
 {
+	int	i;
+
+	i = 0;
 	if (!word)
 		return (EXIT_FAILURE);
 	while (g_lookup[i].b != 0)
@@ -35,36 +38,32 @@ int	ft_fonction(t_list *cmd, t_list **cpenv, t_data *x)
 	return (0);
 }
 
-int	ft_is_builtin(t_list **cmdredir, t_data *x, t_list **cpenv)
+int	ft_is_builtin(t_list **cmdredir, t_data *x, t_list **cpenv, int nb)
 {
 	t_list	*tmp;
 	t_list	*cmd;
 	t_list	*redir;
 	int		i;
-
+	(void)nb;
 	tmp = *cmdredir;
 	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
 	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
 	i = 0;
-	if (ft_is_is_builtin(((t_words *)cmd->content)->word, i) == 0)
+	if (ft_is_is_builtin(((t_words *)cmd->content)->word) == 0)
 	{
 		x->flag_redir = 1;
 		while (redir)
 		{
-			dprintf(2, "count_files = %d\n", x->count_files);
 			if (ft_is_redirection_in(&redir) == 1)
 			{
-				if (x->infile > 2 && x->count_files > 1)
+				if (x->infile && x->count_files > 0)
 					close(x->infile);
 				ft_no_pipe_redirection_in(&redir, x);
 			}
 			if (ft_is_redirection_out(&redir) == 1)
 			{
-				if (x->outfile > 2 && x->count_files > 1)
-				{
+				if (x->outfile && x->count_files > 0)
 					close(x->outfile);
-					dprintf(2, "ouiiiiiii %d!\n", x->outfile);
-				}
 				ft_no_pipe_redirection_out(&redir, x);
 			}
 			redir = redir->next;

@@ -12,18 +12,16 @@
 
 #include "../minishell.h"
 
-int	ft_unset_others(t_list *tmp, char *before_eq)
+int	ft_unset_others(t_list *tmp, char *bf_eq)
 {
 	t_list	*swp;
-	t_words	*content;
 	int		i;
 
-	content = (t_words *) tmp->content;
 	i = 0;
 	while (tmp && tmp->next && i == 0)
 	{
-		content = (t_words *) tmp->next->content;
-		if (ft_strncmp(before_eq, content->word, ft_strlen(before_eq) - 1) == 0 && i++ == 0)
+		if (ft_strncmp(bf_eq, ((t_words *)tmp->next->content)->word,
+				ft_strlen(bf_eq)) == 0)
 		{
 			if (tmp->next->next)
 				swp = tmp->next->next;
@@ -31,19 +29,17 @@ int	ft_unset_others(t_list *tmp, char *before_eq)
 				swp = NULL;
 			ft_lstdelone(tmp->next, ft_free_words);
 			tmp->next = swp;
+			i = 1;
 		}
 		tmp = tmp->next;
 	}
-	if (i == 0 && tmp && content && ft_strncmp(before_eq,
-			content->word, ft_strlen(before_eq) - 1) == 0 && i++ == 0)
-	{
+	if (i == 0 && tmp && ((t_words *)tmp->content) && ft_strncmp(bf_eq,
+			((t_words *)tmp->content)->word, ft_strlen(bf_eq)) == 0 && i++ == 0)
 		ft_lstdelone(tmp, ft_free_words);
-		tmp = NULL;
-	}
 	return (i);
 }
 
-int	ft_unset_first(t_list *tmp, char *before_eq)
+int	ft_unset_first(t_list **tmp, char *before_eq)
 {
 	t_list	*swp;
 	t_words	*content;
@@ -51,12 +47,12 @@ int	ft_unset_first(t_list *tmp, char *before_eq)
 
 	swp = NULL;
 	check = 0;
-	content = (t_words *) tmp->content;
+	content = (t_words *)(*tmp)->content;
 	if (ft_strncmp(before_eq, content->word, ft_strlen(before_eq)) == 0)
 	{
-		swp = tmp->next;
-		ft_lstdelone(tmp, ft_free_words);
-		tmp = swp;
+		swp = (*tmp)->next;
+		ft_lstdelone(*tmp, ft_free_words);
+		*tmp = swp;
 		check = 1;
 	}
 	return (check);
@@ -75,8 +71,9 @@ int	ft_unset(t_list *cmdredir, t_list **cpenv, t_data *x)
 	while (cmd)
 	{
 		content = (t_words *) cmd->content;
-		if (ft_unset_first(*cpenv, content->word) == 0)
-			ft_unset_others(*cpenv, content->word);	
+		if (check_if_equal(content->word) == 0)
+			if (ft_unset_first(cpenv, content->word) == 0)
+				ft_unset_others(*cpenv, content->word);
 		cmd = cmd->next;
 	}
 	return (0);

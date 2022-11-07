@@ -28,7 +28,7 @@ static void	del_first(t_list **tmp, t_list **lst_words)
 	}
 }
 
-void	ft_delete_space(t_list **lst_words)
+int	ft_delete_space(t_list **lst_words)
 {
 	t_list	*tmp;
 	t_list	*swp;
@@ -51,6 +51,9 @@ void	ft_delete_space(t_list **lst_words)
 		else
 			tmp = tmp->next;
 	}
+	if (!lst_words || !(*lst_words))
+		return (1);
+	return (0);
 }
 
 static char	*get_lim(t_list **tmp, char *lim, t_words **content)

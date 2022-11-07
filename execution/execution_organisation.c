@@ -24,11 +24,15 @@ void	ft_exec_organisor(t_list **cmdredir, t_list **cpenv, t_data *x)
 		ft_waitpid(&tmp, x);
 	}
 	else
-	{
-		//dprintf(2, "uiuiuiui\n");
 		ft_exec_no_pipes(&tmp, cpenv, x);
-
-	}
+	///if (nb == 1)
+	//{
+	if (((t_cmdredir *)tmp->content)->fd_cmd[0] != STDIN_FILENO)
+		close(((t_cmdredir *)tmp->content)->fd_cmd[0]);
+	if (((t_cmdredir *)tmp->content)->fd_cmd[1] != STDOUT_FILENO)
+		close(((t_cmdredir *)tmp->content)->fd_cmd[1]);
+	
+	//}
 }
 
 int	ft_nb_cmd(t_list **cmdredir)

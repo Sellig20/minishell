@@ -31,6 +31,7 @@ void	ft_set_fdcmd(t_list **after_doll, t_data *x)
 {
 	t_list	*tmp;
 	int		j;
+
 	tmp = *after_doll;
 	x->nb_cmd = ft_nb_cmd(&tmp);
 	while (tmp)

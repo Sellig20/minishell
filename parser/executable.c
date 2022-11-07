@@ -39,7 +39,8 @@ int	ft_is_exe(t_list **tmp, t_data *x, t_list **cpenv)
 
 	executable = NULL;
 	list = *tmp;
-	if (!list || !((t_words *)list->content) || !((t_words *)list->content)->word)
+	if (!list || !((t_words *)list->content)
+		|| !((t_words *)list->content)->word)
 		return (EXIT_FAILURE);
 	(void)x;
 	(void)cpenv;

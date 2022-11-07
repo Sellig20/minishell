@@ -48,9 +48,9 @@ char	*ft_strndup(char const *s, int word_size)
 	char	*word;
 	int		j;
 
-	word = malloc(sizeof(char) * word_size + 1);
 	if (!s)
 		return (NULL);
+	word = malloc(sizeof(char) * word_size + 1);
 	if (!word)
 		return (NULL);
 	j = 0;

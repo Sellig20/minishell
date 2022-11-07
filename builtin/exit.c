@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 17:19:42 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/04 19:18:19 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:59:13 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 extern int	g_status;
 
-void ft_free_all(t_data *x)
+void	ft_free_all(t_data *x)
 {
 	if (x->letters)
 		ft_lstclear(&(x->letters), ft_free_letters);
@@ -54,40 +54,27 @@ int	get_exit(long long nb)
 
 int	ft_exit(t_list *cmdredir, t_list **cpenv, t_data *x)
 {
-	t_list		*cmd;
 	long long	nb;
+	t_list		*cmd;
 
-	cmd = ((t_cmdredir *)cmdredir->content)->cmd;
 	(void) x;
 	(void) cpenv;
-	(void) cmd;
+	cmd = ((t_cmdredir *)cmdredir->content)->cmd;
 	write(2, "exit\n", 5);
 	if (!(cmd->next))
-	{
-		ft_free_all(x);
-		exit(0);
-	}
+		return (ft_free_all(x), exit(0), 5);
 	cmd = cmd->next;
 	nb = ft_atoll(((t_words *)cmd->content)->word);
-	printf("nb = %lld\n", nb);
 	if (ft_is_mul_digit((((t_words *)cmd->content)->word)) == 1
-		&& (nb > 922337203685477807
-			|| nb < -922337203685477808))
-	{
-		printf("numeric argument required\n");
-		ft_free_all(x);
-		exit(2);
-	}
+		&& (nb > 922337203685477807 || nb < -922337203685477808))
+		return (printf("exit: numeric argument required\n"),
+			ft_free_all(x), exit(2), 5);
 	else
-	{
-		ft_free_all(x);
-		exit(get_exit(nb));
-	}
+		return (ft_free_all(x), exit(get_exit(nb)), 5);
 	if (cmd->next)
 	{
 		g_status = 2;
-		printf("too many arguments\n");
-		return (2);
+		return (printf("exit: too many arguments\n"), 2);
 	}
 	return (0);
 }
@@ -96,6 +83,5 @@ void	ft_exit_bis(char *str, t_data *x)
 {
 	ft_free_all(x);
 	g_status = ft_atoll(str);
-//	dprintf(2, "g_status = %d\n", g_status);
 	exit(g_status);
 }

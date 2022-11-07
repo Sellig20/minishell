@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:41:59 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/03 15:11:56 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/11/05 03:53:12 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	quote_management(t_letters *letters, int *i)
 	return (0);
 }
 
-static	t_letters	*letters_init(char letter, int *i)
+static	t_letters	*letters_init(char letter, int *i, t_data *x)
 {
 	t_letters	*letters;
 
@@ -51,6 +51,10 @@ static	t_letters	*letters_init(char letter, int *i)
 	letters->letter = letter;
 	if (quote_management(letters, i) == 1)
 		return (letters);
+	else if (letter == '$' && *i != S_QUOTE_STATE)
+		letters->token = TOK_DOLL;
+	else if (x->flag_heredoc != 0)
+		letters->token = TOK_WORD;
 	else if (letter == ' ' && *i == DEFAULT_STATE)
 		letters->token = TOK_SPAC;
 	else if (letter == '>' && *i == DEFAULT_STATE)
@@ -59,8 +63,6 @@ static	t_letters	*letters_init(char letter, int *i)
 		letters->token = TOK_FROM;
 	else if (letter == '|' && *i == DEFAULT_STATE)
 		letters->token = TOK_PIPE;
-	else if (letter == '$' && *i != S_QUOTE_STATE)
-		letters->token = TOK_DOLL;
 	else
 		letters->token = TOK_WORD;
 	return (letters);
@@ -93,21 +95,19 @@ int	pre_lexeur(t_data *x, char *line, t_list **lst_letters)
 	t_list	*new;
 
 	i = 1;
-	(void) x;
 	j = malloc(sizeof(int));
 	*j = DEFAULT_STATE;
 	if (line == NULL)
 		return (1);
-	new = ft_lstnew((void *)letters_init(line[0], j));
+	new = ft_lstnew((void *)letters_init(line[0], j, x));
 	*lst_letters = new;
 	while (line[i])
 	{
-		new = ft_lstnew((void *)letters_init(line[i], j));
+		new = ft_lstnew((void *)letters_init(line[i], j, x));
 		ft_lstadd_back(lst_letters, new);
 		i++;
 	}
-	if (x->flag_heredoc != 42 && *j != DEFAULT_STATE)
-		return (syntax_error(*lst_letters, 8), 1);
-	free(j);
-	return (0);
+	if (x->flag_heredoc == 0 && *j != DEFAULT_STATE)
+		return (free(j), syntax_error(*lst_letters, 8), 1);
+	return (free(j), 0);
 }

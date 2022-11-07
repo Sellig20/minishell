@@ -6,11 +6,13 @@
 /*   By: evsuits <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 15:00:34 by evsuits           #+#    #+#             */
-/*   Updated: 2022/10/27 00:21:25 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/11/05 02:57:35 by evsuits          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern int	g_status;
 
 void	syntax_error(t_list *tmp, int i)
 {
@@ -34,6 +36,7 @@ void	syntax_error(t_list *tmp, int i)
 	}
 	else if (i == 8)
 		write(2, "Minimichel: wrong number of quotes\n", 35);
+	g_status = 2;
 }
 
 int	token_validity(t_list **lst_words)

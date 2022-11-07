@@ -38,7 +38,7 @@ void	case_no_eq(char *cmd, t_list **cpenv)
 	while (tmp && check == 0)
 	{
 		content = (t_words *)tmp->content;
-		if (strcmp(cmd, content->word) == 0
+		if (ft_strcmp(cmd, content->word) == 0
 			|| ft_strncmp(with_eq, content->word, ft_strlen(with_eq)) == 0)
 			check++;
 		tmp = tmp->next;
@@ -58,7 +58,7 @@ void	case_eq(int index_eq, char *cmd, t_list **cpenv)
 
 	new = NULL;
 	with_eq = ft_substr(cmd, 0, index_eq);
-	ft_unset_first(*cpenv, with_eq);
+	ft_unset_first(cpenv, with_eq);
 	ft_unset_others(*cpenv, with_eq);
 	new = ft_lstnew((void *) words_init(cmd, TOK_ENV));
 	free(with_eq);

@@ -51,7 +51,6 @@ typedef struct s_btw_pipes{
 	t_list *portion_words;
 }	t_btw_pipes;
 
-
 typedef struct s_cmdredir{
 	t_list		*cmd;
 	t_list		*redirection;
@@ -169,6 +168,7 @@ enum	e_quote
 	DEF = 120,
 	AF_SPAC = 121,
 };
+void		visualize_t_letters(t_list **lst_letters);
 
 //main.c
 int			sizeof_string_tab(char **str);
@@ -203,37 +203,37 @@ int			check_del(t_list *tmp);
 
 
 //lim_spac.c
-void		ft_delete_space(t_list **lst_words);
+int			ft_delete_space(t_list **lst_words);
 void		ft_lim_protection(t_list **lst_words);
 
 /////////////////////////////////////////PARSER////////////////////////////////////////////////////////
 //expand.c
 char		*ft_result(t_list **envcp, int res, char *word, t_data *x);
-char	*ft_methode_1(char *new_word, char *word, t_dollar *d, t_data *x);
-char	*ft_methode_2(char *new_word, char *word, t_dollar *d);
-char	*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x);
-char	*ft_methode_4(char *new_word, char *word, t_dollar *d);
+char		*ft_methode_1(char *new_word, char *word, t_dollar *d, t_data *x);
+char		*ft_methode_2(char *new_word, char *word, t_dollar *d);
+char		*ft_methode_3(char *new_word, char *word, t_dollar *d, t_data *x);
+char		*ft_methode_4(char *new_word, char *word, t_dollar *d);
 
 //expand_annexe.c
-int	ft_check_after_d(char *word);
-char	*ft_expand_found_3(t_dollar *d, char *new_word, int len);
-char	*ft_expand_not_found_4(t_dollar *d, char *new_word);
-char	*ft_expand_found_4(t_dollar *d, char *new_word);
-char	*ft_expand_4(char *new_word, t_dollar *d);
+int			ft_check_after_d(char *word);
+char		*ft_expand_found_3(t_dollar *d, char *new_word, int len);
+char		*ft_expand_not_found_4(t_dollar *d, char *new_word);
+char		*ft_expand_found_4(t_dollar *d, char *new_word);
+char		*ft_expand_4(char *new_word, t_dollar *d);
 
 //sep_cmd.c
-int	ft_check_not_cmd(t_list *portion);
-int	ft_check_dollar_followed(t_list *portion);
-int	ft_check_dollar(t_list *portion);
-int	ft_check_cmd_followed(t_list *portion);
-int	ft_sort_cmd(t_list *portion);
+int			ft_check_not_cmd(t_list *portion);
+int			ft_check_dollar_followed(t_list *portion);
+int			ft_check_dollar(t_list *portion);
+int			ft_check_cmd_followed(t_list *portion);
+int			ft_sort_cmd(t_list *portion);
 
 //parser_cmd_redir.c
 t_list		**ft_dupcmd(t_list *portion);
 t_list		**ft_dupredir(t_list *portion);
 t_cmdredir	*cmdredir_init(t_list *portion);
 void		ft_sep_cmd_redir(t_list **btw_pipes, t_list **future);
-t_list	*ft_return_duped(t_list *portion, t_list *dup);
+t_list		*ft_return_duped(t_list *portion, t_list *dup);
 
 //cmd_constructor.c
 int			ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv);
@@ -254,6 +254,11 @@ void		ft_check_ambi(t_list **tmp, t_data *x);
 int			ft_is_null(char *cmd);
 int			ft_is_space(char *cmd);
 char		*ft_join_options(t_list **cmd, t_data *x);
+
+//heredoc_utils.c
+int	init_list_heredoc(t_list ***letter, t_list ***words);
+void	write_heredoc(t_list **words, int fd);
+char	*heredoc_get_lim(t_list *letters, t_data *x);
 
 ////////////////////////////////////ERROR FUNCTIONS////////////////////////////////////////////////////
 //open_error_files.c
@@ -362,7 +367,8 @@ void		visualize_string_tab(char **str);
 void		visualize_t_words(t_list **lst_words);
 
 //////////BUILTIN//////////
-int			ft_is_builtin(t_list **tmp, t_data *x, t_list**cpenv);
+int			ft_is_builtin(t_list **tmp, t_data *x, t_list**cpenv, int nb);
+int			ft_is_is_builtin(char *word);
 
 //export.c
 void		ft_export_solo(t_list **cpenv);
@@ -383,7 +389,7 @@ void		case_pl_eq(int index_eq, char *cmd, t_list **cpenv, int i);
 
 //unset.c
 int			ft_unset_others(t_list *tmp, char *before_eq);
-int			ft_unset_first(t_list *tmp, char *before_eq);
+int			ft_unset_first(t_list **tmp, char *before_eq);
 int			ft_unset(t_list *cmd, t_list **cpenv, t_data *x);
 
 //exit_utils.c
@@ -403,7 +409,7 @@ void		ft_print_echo(char *str, t_list *cmdredir, t_data *x);
 
 //cd.c
 int			ft_cd(t_list *cmdredir, t_list **cpenv, t_data *x);
-int			ft_cd_organisation(char *tmp, t_list **envcp, char *str, int i, t_data *x);
+int			ft_cd_organisation(char *tmp, t_list **envcp, char *str, t_data *x);
 char		*ft_cd_back(char *tmp);
 char		*ft_cd_home(char *tmp, t_list **cpenv);
 void		ft_cd_export(char *str, char *word, t_list *cpenv, t_data *x);
@@ -415,9 +421,9 @@ void		ft_cd_is_quotes(char *str);
 char		*ft_check_str(char *str);
 
 //cd_utils2.c
-void	ft_change_oldpwd(char *word, char *tmp, t_list *cpenv, t_data *x);
-void	ft_cd_is_back(char *tmp, char *word, t_list *cpenv, t_data *x);
-void	ft_cd_is_til(char *tmp, char *word, t_list *cpenv, t_data *x);
+void		ft_change_oldpwd(char *word, t_list *cpenv, t_data *x);
+void		ft_cd_is_back(char *word, char *tmp, t_list *cpenv, t_data *x);
+void		ft_cd_is_til(char *word, char *tmp, t_list *cpenv, t_data *x);
 
 
 typedef struct s_builtin_value	t_builtin_value;

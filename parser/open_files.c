@@ -6,11 +6,13 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 13:53:21 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/04 18:46:49 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 20:34:30 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern int	g_status;
 
 int	ft_read_infile(char *infile, t_data *x)
 {
@@ -36,7 +38,14 @@ int	ft_read_outfile_append(char *outfile, t_data *x)
 
 	file = open(outfile, O_CREAT | O_WRONLY | O_APPEND, 0644);
 	if (file < 0)
-		ft_perm_error(outfile, x);
+	{
+		ft_putstr_fd("Minimichel : ", 2);
+		perror (outfile);
+		if (x->flag_no_pipe_no_cmd_ok_redir == 0)
+			ft_exit_bis("1", x);
+		else
+			g_status = 1;
+	}
 	x->count_files++;
 	return (file);
 }
@@ -47,7 +56,14 @@ int	ft_read_outfile(char *outfile, t_data *x)
 
 	file = open(outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (file < 0)
-		ft_perm_error(outfile, x);
+	{
+		ft_putstr_fd("Minimichel : ", 2);
+		perror (outfile);
+		if (x->flag_no_pipe_no_cmd_ok_redir == 0)
+			ft_exit_bis("1", x);
+		else
+			g_status = 1;
+	}
 	x->count_files++;
 	return (file);
 }

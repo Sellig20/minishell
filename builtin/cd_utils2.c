@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 01:40:04 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/05 02:24:43 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 23:44:05 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,19 @@ void	ft_change_oldpwd(char *word, t_list *cpenv, t_data *x)
 	return (free(tmp1));
 }
 
-void	ft_cd_is_back(char *word, char *tmp1, t_list *cpenv, t_data *x)
+void	ft_cd_is_dash(char *tmp1, char *word, t_list *cpenv, t_data *x)
+{
+	char	*tmp;
+
+	tmp = ft_cd_dash(tmp1, &cpenv, x);
+	if (chdir(tmp) == 0)
+		ft_change_oldpwd(word, cpenv, x);
+	free(tmp);
+	free(tmp1);
+	return (free(word));
+}
+
+void	ft_cd_is_back(char *tmp1, char *word, t_list *cpenv, t_data *x)
 {
 	char	*tmp;
 
@@ -37,6 +49,7 @@ void	ft_cd_is_back(char *word, char *tmp1, t_list *cpenv, t_data *x)
 	if (chdir(tmp) == 0)
 		ft_change_oldpwd(word, cpenv, x);
 	free(tmp);
+	free(tmp1);
 	return (free(word));
 }
 
@@ -48,5 +61,7 @@ void	ft_cd_is_til(char *tmp1, char *word, t_list *cpenv, t_data *x)
 	if (chdir(tmp) == 0)
 		ft_change_oldpwd(word, cpenv, x);
 	free(tmp);
+	free(word);
+	free(tmp1);
 	return ;
 }

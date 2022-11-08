@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:41:45 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/05 05:18:00 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 19:47:37 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ extern int	g_status;
 int	ft_is_redirection_in(t_list **redir)
 {
 	t_list	*tmp_redir;
-	//dprintf(2,"here\n");
+
 	tmp_redir = *redir;
 	if (((t_words *)tmp_redir->content) == NULL)
 		return (0);
 	if (((t_words *)tmp_redir->content)->token == TOK_FROM
-			|| ((t_words *)tmp_redir->content)->token  ==TOK_FRFR)
+		|| ((t_words *)tmp_redir->content)->token == TOK_FRFR)
 		return (1);
 	else
 		return (0);
@@ -37,7 +37,7 @@ int	ft_is_redirection_out(t_list **redir)
 	if (((t_words *)tmp_redir->content) == NULL)
 		return (0);
 	if (((t_words *)tmp_redir->content)->token == TOK_TO
-			|| ((t_words *)tmp_redir->content)->token == TOK_TOTO)
+		|| ((t_words *)tmp_redir->content)->token == TOK_TOTO)
 		return (1);
 	else
 		return (0);

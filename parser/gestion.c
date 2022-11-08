@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:42:07 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/04 18:39:40 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 19:56:29 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,10 @@ int	ft_is_space(char *cmd)
 	while (cmd[i])
 	{
 		if (cmd[i] == ' ' && cmd[i + 1] == '\0')
-			return (false);
+			return (FALSE);
 		i++;
 	}
-	return (true);
+	return (TRUE);
 }
 
 int	ft_is_null(char *cmd)
@@ -53,12 +53,12 @@ int	ft_is_null(char *cmd)
 	if (ft_strlen(cmd) == 0)
 	{
 		printf("Minimichel: Error \n");
-		return (false);
+		return (FALSE);
 	}
 	else if (ft_is_space(cmd) == 0)
 	{
 		ft_putstr_fd("Minimichel: Error\n", 2);
-		return (false);
+		return (FALSE);
 	}
 	return (1);
 }

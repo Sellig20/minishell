@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 11:22:59 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/05 04:36:15 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 19:56:10 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,5 @@ int	ft_error_ambigous_redir(char *word, int len)
 	free(to_return);
 	free(tmp);
 	free(tmp1);
-	return (false);
+	return (FALSE);
 }

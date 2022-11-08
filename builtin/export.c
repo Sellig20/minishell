@@ -6,27 +6,11 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:22:25 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/07 16:02:20 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/11/08 19:26:32 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	write_exp_one(char *before_eq, char *after_eq, t_list *cmdredir)
-{
-	ft_putstr_fd("export ", ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-	ft_putstr_fd(before_eq, ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-	ft_putstr_fd("=", ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-	ft_putstr_fd(after_eq, ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-	ft_putstr_fd("\n", ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-}
-
-void	write_exp_two(char *content,t_list *cmdredir)
-{
-	ft_putstr_fd("export ", ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-	ft_putstr_fd(content, ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-	ft_putstr_fd("\n", ((t_cmdredir *)cmdredir->content)->fd_cmd[1]);
-}
 
 void	ft_write_exp(t_list **exp, t_list *cmdredir)
 {
@@ -129,11 +113,4 @@ int	ft_export(t_list *cmdredir, t_list **cpenv, t_data *x)
 		cmd = cmd->next;
 	}
 	return (err);
-}
-
-void	ft_export_error(char *cmdnext)
-{
-	write(2, "Minimichel: export: `", 21);
-	write(2, cmdnext, ft_strlen(cmdnext));
-	write(2, "':not a valid identifier\n", 25);
 }

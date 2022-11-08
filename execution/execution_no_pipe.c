@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 17:56:57 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/05 06:12:03 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 19:28:43 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,9 @@ void	ft_exec_no_pipes(t_list **cmdredir, t_list **cpenv, t_data *x)
 {
 	t_list	*tmp;
 	t_list	*cmd;
-	t_list	*redir;
 
 	tmp = *cmdredir;
 	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
-	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
 	ft_set_fdcmd(&tmp, x);
 	if (x->flag_stop == 2)
 	{
@@ -31,12 +29,8 @@ void	ft_exec_no_pipes(t_list **cmdredir, t_list **cpenv, t_data *x)
 	}
 	if (cmd->content)
 	{
-		if (ft_is_builtin(&tmp, x, cpenv, 0) == 0)
-		{
-			if (x->outfile)
-				close(x->outfile);
-			return ;
-		}
+		if (ft_is_builtin(&tmp, x, cpenv) == 0)
+			return (ft_close_files(x));
 		if (ft_is_exe(&cmd, x, cpenv) == 0)
 			ft_no_pipe_is_executable(&tmp, cpenv, x);
 		ft_exec_no_pipe_annexe(&tmp, x, cpenv);
@@ -46,9 +40,7 @@ void	ft_exec_no_pipes(t_list **cmdredir, t_list **cpenv, t_data *x)
 			free(x->pc);
 	}
 	else
-	{
-		ft_no_pipe_no_cmd_redir(&redir, x);
-	}
+		ft_no_pipe_no_cmd_redir(&tmp, x);
 }
 
 void	ft_exec_no_pipe_annexe(t_list **cmdredir, t_data *x, t_list **cpenv)
@@ -86,18 +78,7 @@ void	ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 	tmp_redir = *redir;
 	while (tmp_redir)
 	{
-		if (ft_is_redirection_in(&tmp_redir) == 1)
-		{
-			if (x->infile && x->count_files > 1)
-				close(x->infile);
-			ft_no_pipe_redirection_in(&tmp_redir, x);
-		}
-		if (ft_is_redirection_out(&tmp_redir) == 1)
-		{
-			if (x->outfile && x->count_files > 1)
-				close(x->outfile);
-			ft_no_pipe_redirection_out(&tmp_redir, x);
-		}
+		ft_loop_redirections_prot(&tmp_redir, x);
 		tmp_redir = tmp_redir->next;
 	}
 	if (x->flag_stop == 2)
@@ -113,41 +94,19 @@ void	ft_proc_no_pipe(t_list **cmd, t_list **redir, t_data *x, t_list **cpenv)
 	free(x->option);
 }
 
-void	ft_no_pipe_no_cmd_redir(t_list **redir, t_data *x)
+void	ft_no_pipe_no_cmd_redir(t_list **cmdredir, t_data *x)
 {
+	t_list	*tmp;
 	t_list	*tmp_redir;
-	tmp_redir = *redir;
+
+	tmp = *cmdredir;
+	tmp_redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
 	x->flag_redir = 1;
 	x->flag_no_pipe_no_cmd_ok_redir = 1;
-	// while (tmp_redir)
-	// {
-	// 	if (ft_is_redirection_in(&tmp_redir) == 1)
-	// 	{
-	// 		dprintf(2, "count : %d\n", x->count_files);
-	// 		dprintf(2, "file : %d\n", x->infile);
-	// 		if (x->infile && x->count_files > 1)
-	// 		{
-	// 			close(x->infile);
-	// 			dprintf(2, "close : %d\n", x->infile);
-	// 		}
-	// 		ft_no_pipe_redirection_in(&tmp_redir, x);
-	// 	}
-	// 	if (ft_is_redirection_out(&tmp_redir) == 1)
-	// 	{
-	// 		if (x->outfile && x->count_files > 1)
-	// 			close(x->outfile);
-	// 		ft_no_pipe_redirection_out(&tmp_redir, x);
-	// 	}
-	// 	tmp_redir = tmp_redir->next;
-	// }
 	if (ft_is_redirection_in(&tmp_redir) == 1)
 		ft_no_pipe_redirection_in(&tmp_redir, x);
 	if (ft_is_redirection_out(&tmp_redir) == 1)
 		ft_no_pipe_redirection_out(&tmp_redir, x);
-	// if (x->infile)
-	// 	close(x->infile);
-	// if (x->outfile)
-	// 	close(x->outfile);
 }
 
 void	ft_no_pipe_is_executable(t_list **cmdredir, t_list **cpenv, t_data *x)

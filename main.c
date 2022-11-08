@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/22 14:40:12 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/07 21:06:36 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 23:09:32 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,6 @@ void	ft_reset_x(t_data *x, t_list *lst_letters, t_list *lst_words, t_list *lst_b
 		x->letters = lst_letters;
 		x->btw_pipes = lst_btw_pipes;
 		x->flag_executable = 0;
-		x->flag_ambi = 0;
 		x->flag_redir = 0;
 		x->flag_stop = 0;
 		x->flag_no_pipe_no_cmd_ok_redir = 0;
@@ -150,7 +149,11 @@ void	ft_reset_x(t_data *x, t_list *lst_letters, t_list *lst_words, t_list *lst_b
 		x->outfile = 0;
 		x->infile = 0;
 		x->count_files = 0;
-		x->is_retrieve = 0;
+		x->builtin = 0;
+		x->cdi = 0;
+		x->cdj = 0;
+		x->cdk = 0;
+		x->bretzel = 0;
 		x->line = readline("$>");
 }
 
@@ -192,7 +195,6 @@ int	main(int ac, char **av, char **env)
 						sep_btw_pipes(lst_words, lst_btw_pipes);
 						ft_lstclear(lst_words, ft_free_words);
 						ft_sep_cmd_redir(lst_btw_pipes, segment);
-					//	ft_visualize_cmd_redir(segment);
 						ft_lstclear(lst_btw_pipes, ft_free_btw_pipes);
 						ft_exec_organisor(segment, cpenv, &x);
 					}

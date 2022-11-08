@@ -6,13 +6,11 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 11:17:56 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/05 06:14:07 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 22:40:11 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-//extern int g_status;
 
 int	ft_strn(char *str, t_data *x)
 {
@@ -22,7 +20,7 @@ int	ft_strn(char *str, t_data *x)
 	x->only_n = 0;
 	if (ft_strlenlen(str) == 1)
 		return (0);
-	if (str[0] == '-')
+	if (str && str[0] == '-')
 	{
 		while (str[i])
 		{

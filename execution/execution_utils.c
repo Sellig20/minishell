@@ -6,11 +6,19 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 18:41:45 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/01 18:47:01 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 21:39:05 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	ft_close_files(t_data *x)
+{
+	if (x->infile)
+		close(x->infile);
+	if (x->outfile)
+		close(x->outfile);
+}
 
 int	ft_nb_cmd(t_list **lst)
 {
@@ -44,5 +52,24 @@ void	ft_set_fdcmd(t_list **after_doll, t_data *x)
 			j++;
 		}
 		tmp = tmp->next;
+	}
+}
+
+void	ft_loop_redirections_prot(t_list **redir, t_data *x)
+{
+	t_list	*tmp_redir;
+
+	tmp_redir = *redir;
+	if (ft_is_redirection_in(&tmp_redir) == 1)
+	{
+		if (x->infile && x->count_files > 0)
+			close(x->infile);
+		ft_no_pipe_redirection_in(&tmp_redir, x);
+	}
+	if (ft_is_redirection_out(&tmp_redir) == 1)
+	{
+		if (x->outfile && x->count_files > 0)
+			close(x->outfile);
+		ft_no_pipe_redirection_out(&tmp_redir, x);
 	}
 }

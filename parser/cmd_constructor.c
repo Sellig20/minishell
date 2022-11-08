@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/29 18:44:25 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/04 18:37:53 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 21:43:35 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,15 @@ int	ft_cmd_constructor(t_list **cmd, t_data *x, t_list **cpenv)
 {
 	t_list	*cmd_line;
 
+	//int i = 0;
 	cmd_line = *cmd;
+	if ((((t_words *)cmd_line->content)->word[0]) == '/' &&
+			access(&(((t_words *)cmd_line->content)->word[0]), X_OK) != 0)
+	{
+		ft_putstr_fd("Minimichel :", 2);
+		perror(&((t_words *)cmd_line->content)->word[0]);
+		ft_exit_bis("127", x);
+	}
 	(void)cpenv;
 	x->option = NULL;
 	x->pc = NULL;

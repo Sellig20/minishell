@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 20:12:11 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/07 15:56:35 by evsuits          ###   ########.fr       */
+/*   Updated: 2022/11/08 23:45:28 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,22 @@ int	ft_cdquotes(char *str)
 
 void	ft_cd_is_quotes(char *str)
 {
+	dprintf(2, "hhh\n");
 	if (ft_cdquotes(str) == 1)
 		return ;
 	else
-		str = ft_check_str(str);
+		str = ft_check_str(str, NULL, NULL);
 }
 
-char	*ft_check_str(char *str)
+char	*ft_check_str(char *str, t_list **cpenv, t_data *x)
 {
-	DIR	*d;
+	DIR		*d;
 
+	(void)x;
+	(void)cpenv;
+	if (!str)
+		return (free(str), NULL);
 	d = opendir(str);
-	if (access(str, X_OK) != 0)
-		dprintf(2, "babaja\n");
 	if (d == NULL)
 	{
 		ft_putstr_fd("Minimichel : ", 2);

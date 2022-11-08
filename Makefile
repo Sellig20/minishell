@@ -6,7 +6,7 @@
 #    By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/22 14:34:45 by evsuits           #+#    #+#              #
-#    Updated: 2022/11/05 01:40:53 by jecolmou         ###   ########.fr        #
+#    Updated: 2022/11/08 19:23:12 by jecolmou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRCS= main.c \
 	  ./execution/execution_no_pipe.c \
 	  ./execution/redirection_pipe.c \
 	  ./execution/redirection_no_pipe.c \
+	  ./execution/execution_utils.c \
 	  ./execution/execution_pipe_utils.c \
 	  ./execution/execution_organisation.c \
 	  ./utils/utils.c \
@@ -56,6 +57,7 @@ SRCS= main.c \
 	  ./builtin/export.c \
 	  ./builtin/export_case.c \
 	  ./builtin/export_utils.c \
+	  ./builtin/export_utils2.c \
 	  ./builtin/unset.c \
 	  ./builtin/pwd.c \
 	  ./builtin/echo.c \

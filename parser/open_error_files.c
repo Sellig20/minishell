@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/21 13:54:44 by jecolmou          #+#    #+#             */
-/*   Updated: 2022/11/04 18:45:34 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 19:56:17 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	ft_error_nsfod(char *infile, t_data *x)
 		ft_exit_bis("1", x);
 	else
 		g_status = 1;
-	return (false);
+	return (FALSE);
 }
 
 int	ft_exist_error_directory(char *infile, t_data *x)
@@ -44,7 +44,7 @@ int	ft_exist_error_directory(char *infile, t_data *x)
 		ft_exit_bis("1", x);
 	else
 		g_status = 1;
-	return (false);
+	return (FALSE);
 }
 
 int	ft_perm_error(char *file, t_data *x)
@@ -57,5 +57,5 @@ int	ft_perm_error(char *file, t_data *x)
 		ft_exit_bis("1", x);
 	else
 		g_status = 1;
-	return (false);
+	return (FALSE);
 }

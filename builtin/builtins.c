@@ -6,7 +6,7 @@
 /*   By: jecolmou <jecolmou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/27 13:23:01 by evsuits           #+#    #+#             */
-/*   Updated: 2022/11/05 06:17:44 by jecolmou         ###   ########.fr       */
+/*   Updated: 2022/11/08 18:18:09 by jecolmou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,45 +38,45 @@ int	ft_fonction(t_list *cmd, t_list **cpenv, t_data *x)
 	return (0);
 }
 
-int	ft_is_builtin(t_list **cmdredir, t_data *x, t_list **cpenv, int nb)
+int	ft_go_builtin(t_list **cmdredir, t_list **cmd, t_data *x, t_list **cpenv)
+{
+	t_list	*tmp;
+	t_list	*tmp_cmd;
+
+	tmp = *cmdredir;
+	tmp_cmd = *cmd;
+	if (ft_strcmp(((t_words *)tmp_cmd->content)->word,
+			g_lookup[x->builtin].b) == 0)
+	{
+		g_lookup[x->builtin].fonction(tmp, cpenv, x);
+		g_status = 0;
+		return (EXIT_SUCCESS);
+	}
+	return (EXIT_FAILURE);
+}
+
+int	ft_is_builtin(t_list **cmdredir, t_data *x, t_list **cpenv)
 {
 	t_list	*tmp;
 	t_list	*cmd;
 	t_list	*redir;
-	int		i;
-	(void)nb;
+
 	tmp = *cmdredir;
 	cmd = (t_list *)((t_cmdredir *)tmp->content)->cmd;
 	redir = (t_list *)((t_cmdredir *)tmp->content)->redirection;
-	i = 0;
 	if (ft_is_is_builtin(((t_words *)cmd->content)->word) == 0)
 	{
 		x->flag_redir = 1;
 		while (redir)
 		{
-			if (ft_is_redirection_in(&redir) == 1)
-			{
-				if (x->infile && x->count_files > 0)
-					close(x->infile);
-				ft_no_pipe_redirection_in(&redir, x);
-			}
-			if (ft_is_redirection_out(&redir) == 1)
-			{
-				if (x->outfile && x->count_files > 0)
-					close(x->outfile);
-				ft_no_pipe_redirection_out(&redir, x);
-			}
+			ft_loop_redirections_prot(&redir, x);
 			redir = redir->next;
 		}
-		while((g_lookup[i].b != 0))
+		while ((g_lookup[x->builtin].b != 0))
 		{
-			if (ft_strcmp(((t_words *)cmd->content)->word, g_lookup[i].b) == 0)
-			{
-				g_lookup[i].fonction(tmp, cpenv, x);
-				g_status = 0;
+			if (ft_go_builtin(&tmp, &cmd, x, cpenv) == EXIT_SUCCESS)
 				return (EXIT_SUCCESS);
-			}
-			i++;
+			x->builtin++;
 		}
 	}
 	else
